@@ -19,7 +19,7 @@ public class PacketWarp extends BasePacket {
     }
 
     public PacketWarp(UUID uuid, String warp, String server) {
-        this.id = PacketID.Park.WARP.getID();
+        super(PacketID.Park.WARP.getID());
         this.uuid = uuid;
         this.warp = warp;
         this.server = server;

@@ -76,7 +76,7 @@ public class WarpUtil {
 
     public static void crossServerWarp(final UUID uuid, final String warp, final String server) {
         PacketWarp packet = new PacketWarp(uuid, warp, server);
-        Core.getInstance().getDashboardConnection().send(packet.getJSON().toString());
+        Core.getDashboardConnection().send(packet.getJSON().toString());
     }
 
     public synchronized static List<Warp> getWarps() {
@@ -155,8 +155,8 @@ public class WarpUtil {
     }
 
     public static void updateWarps() {
-        PacketRefreshWarps packet = new PacketRefreshWarps(Core.getInstance().getInstanceName());
-        Core.getInstance().getDashboardConnection().send(packet.getJSON().toString());
+        PacketRefreshWarps packet = new PacketRefreshWarps(Core.getInstanceName());
+        Core.getDashboardConnection().send(packet.getJSON().toString());
     }
 
     public synchronized static void refreshWarps() {

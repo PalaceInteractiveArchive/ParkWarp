@@ -40,7 +40,7 @@ public class Commanduwarp extends CoreCommand {
             }
             Location loc = player.getLocation();
             final Warp warp = WarpUtil.findWarp(w);
-            final Warp newWarp = new Warp(w, Core.getInstance().getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
+            final Warp newWarp = new Warp(w, Core.getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
                     loc.getPitch(), loc.getWorld().getName());
             Bukkit.getScheduler().runTaskAsynchronously(ParkWarp.getInstance(), () -> {
                 ParkWarp.removeWarp(warp);

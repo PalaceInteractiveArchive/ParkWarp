@@ -45,7 +45,7 @@ public class Commandwarp extends CoreCommand {
                     warp = WarpUtil.findWarp(w);
                 }
                 String targetServer = warp.getServer();
-                String currentServer = Core.getInstance().getServerType();
+                String currentServer = Core.getServerType();
                 final Location loc = warp.getLocation();
                 if (targetServer.equals(currentServer)) {
                     if (tp.isInsideVehicle()) {
@@ -115,7 +115,7 @@ public class Commandwarp extends CoreCommand {
                 }
             }
             String targetServer = warp.getServer();
-            String currentServer = Core.getInstance().getServerType();
+            String currentServer = Core.getServerType();
             final Location loc = warp.getLocation();
             if (targetServer.equals(currentServer)) {
                 if (player.isInsideVehicle()) {
@@ -160,7 +160,7 @@ public class Commandwarp extends CoreCommand {
                 warp = WarpUtil.findWarp(w);
             }
             final String targetServer = warp.getServer();
-            String currentServer = Core.getInstance().getServerType();
+            String currentServer = Core.getServerType();
             final Location loc = warp.getLocation();
             if (targetServer.equals(currentServer)) {
                 player.sendMessage(ChatColor.BLUE + tp.getName()
@@ -189,7 +189,7 @@ public class Commandwarp extends CoreCommand {
     private void listWarpsServer(Player player, int page) {
         List<Warp> warps = ParkWarp.getWarps();
         List<Warp> list = new ArrayList<>();
-        String server = Core.getInstance().getServerType();
+        String server = Core.getServerType();
         list.addAll(warps.stream().filter(w -> w.getServer().equalsIgnoreCase(server)).collect(Collectors.toList()));
         List<String> nlist = list.stream().map(Warp::getName).collect(Collectors.toList());
         Collections.sort(nlist);

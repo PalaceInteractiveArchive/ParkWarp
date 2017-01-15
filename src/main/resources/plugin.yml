@@ -1,4 +1,0 @@
-name: ParkWarp
-version: 1.0
-depend: [Core]
-main: network.palace.parkwarp.ParkWarp

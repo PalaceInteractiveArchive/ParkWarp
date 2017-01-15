@@ -15,7 +15,7 @@ public class PacketRefreshWarps extends BasePacket {
     }
 
     public PacketRefreshWarps(String server) {
-        this.id = PacketID.Park.REFRESHWARPS.getID();
+        super(PacketID.Park.REFRESHWARPS.getID());
         this.server = server;
     }
 

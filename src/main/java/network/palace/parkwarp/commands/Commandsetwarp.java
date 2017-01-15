@@ -38,7 +38,7 @@ public class Commandsetwarp extends CoreCommand {
                         + "A warp already exists by that name! To change the location of that warp, type /uwarp [Warp Name]");
                 return;
             }
-            final Warp warp = new Warp(w, Core.getInstance().getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
+            final Warp warp = new Warp(w, Core.getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
                     loc.getPitch(), loc.getWorld().getName());
             Bukkit.getScheduler().runTaskAsynchronously(ParkWarp.getInstance(), () -> {
                 ParkWarp.addWarp(warp);
