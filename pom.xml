@@ -6,7 +6,7 @@
 
     <groupId>network.palace</groupId>
     <artifactId>ParkWarp</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <repositories>
         <repository>
             <id>palace</id>
@@ -40,8 +40,8 @@
         </dependency>
         <dependency>
             <groupId>network.palace</groupId>
-            <artifactId>core</artifactId>
-            <version>1.6.5</version>
+            <artifactId>Core</artifactId>
+            <version>1.8.0</version>
             <type>jar</type>
         </dependency>
         <dependency>

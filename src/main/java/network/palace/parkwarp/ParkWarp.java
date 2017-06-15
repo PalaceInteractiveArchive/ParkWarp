@@ -11,7 +11,7 @@ import org.bukkit.Bukkit;
 import java.util.ArrayList;
 import java.util.List;
 
-@PluginInfo(name = "ParkWarp", version = "1.0.1", depend = "Core")
+@PluginInfo(name = "ParkWarp", version = "1.0.2", depend = "Core", canReload = true)
 public class ParkWarp extends Plugin {
     private static ParkWarp instance;
     public static List<Warp> warps = new ArrayList<>();
