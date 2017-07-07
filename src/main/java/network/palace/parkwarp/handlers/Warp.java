@@ -112,4 +112,8 @@ public class Warp {
                 world;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
