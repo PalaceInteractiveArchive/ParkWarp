@@ -29,6 +29,7 @@ public class Commandwarp extends CoreCommand {
 
     @Override
     protected void handleCommandUnspecific(CommandSender sender, String[] args) throws CommandException {
+        WarpUtil warpUtil = ParkWarp.getInstance().getWarpUtil();
         if (!(sender instanceof Player)) {
             if (args.length == 2) {
                 if (Bukkit.getPlayer(args[1]) == null) {
@@ -38,11 +39,11 @@ public class Commandwarp extends CoreCommand {
                 final Player tp = Bukkit.getPlayer(args[1]);
                 final String w = args[0];
                 Warp warp;
-                if (WarpUtil.findWarp(w) == null) {
+                if (warpUtil.findWarp(w) == null) {
                     sender.sendMessage(ChatColor.RED + "Warp not found!");
                     return;
                 } else {
-                    warp = WarpUtil.findWarp(w);
+                    warp = warpUtil.findWarp(w);
                 }
                 String targetServer = warp.getServer();
                 String currentServer = Core.getServerType();
@@ -62,7 +63,7 @@ public class Commandwarp extends CoreCommand {
                             ChatColor.GREEN + w + ChatColor.WHITE + "]");
                     return;
                 } else {
-                    WarpUtil.crossServerWarp(tp.getUniqueId(), w, targetServer);
+                    warpUtil.crossServerWarp(tp.getUniqueId(), w, targetServer);
                     return;
                 }
             }
@@ -80,7 +81,7 @@ public class Commandwarp extends CoreCommand {
                 return;
             }
             final String w = args[0];
-            Warp warp = WarpUtil.findWarp(w);
+            Warp warp = warpUtil.findWarp(w);
             if (warp == null) {
                 player.sendMessage(ChatColor.RED + "Warp not found!");
                 return;
@@ -88,28 +89,28 @@ public class Commandwarp extends CoreCommand {
             Rank rank = Core.getPlayerManager().getPlayer(player).getRank();
             if (warp.getName().toLowerCase().startsWith("dvc")) {
                 if (rank.getRankId() < Rank.DVCMEMBER.getRankId()) {
-                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.DVCMEMBER.getNameWithBrackets()
+                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.DWELLER.getFormattedName()
                             + ChatColor.RED + " rank or above to use this warp!");
                     return;
                 }
             }
             if (warp.getName().toLowerCase().startsWith("share")) {
                 if (rank.getRankId() < Rank.SHAREHOLDER.getRankId()) {
-                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.SHAREHOLDER.getNameWithBrackets()
+                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.NOBLE.getFormattedName()
                             + ChatColor.RED + " rank or above to use this warp!");
                     return;
                 }
             }
             if (warp.getName().toLowerCase().startsWith("char")) {
                 if (rank.getRankId() < Rank.CHARACTER.getRankId()) {
-                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.CHARACTER.getNameWithBrackets()
+                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.CHARACTER.getFormattedName()
                             + ChatColor.RED + " rank or above to use this warp!");
                     return;
                 }
             }
             if (warp.getName().toLowerCase().startsWith("staff")) {
                 if (rank.getRankId() < Rank.SQUIRE.getRankId()) {
-                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.SQUIRE.getNameWithBrackets()
+                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.SQUIRE.getFormattedName()
                             + ChatColor.RED + " rank or above to use this warp!");
                     return;
                 }
@@ -128,7 +129,7 @@ public class Commandwarp extends CoreCommand {
                         + ChatColor.WHITE + "]");
                 return;
             } else {
-                WarpUtil.crossServerWarp(player.getUniqueId(), warp.getName(), targetServer);
+                warpUtil.crossServerWarp(player.getUniqueId(), warp.getName(), targetServer);
                 return;
             }
         }
@@ -153,11 +154,11 @@ public class Commandwarp extends CoreCommand {
             final Player tp = Bukkit.getPlayer(args[1]);
             final String w = args[0];
             Warp warp;
-            if (WarpUtil.findWarp(w) == null) {
+            if (warpUtil.findWarp(w) == null) {
                 player.sendMessage(ChatColor.RED + "Warp not found!");
                 return;
             } else {
-                warp = WarpUtil.findWarp(w);
+                warp = warpUtil.findWarp(w);
             }
             final String targetServer = warp.getServer();
             String currentServer = Core.getServerType();
@@ -176,7 +177,7 @@ public class Commandwarp extends CoreCommand {
                         + ChatColor.WHITE + "]");
                 return;
             } else {
-                WarpUtil.crossServerWarp(tp.getUniqueId(), w, targetServer);
+                warpUtil.crossServerWarp(tp.getUniqueId(), w, targetServer);
                 player.sendMessage(ChatColor.BLUE + tp.getName()
                         + " has arrived at " + ChatColor.WHITE + "["
                         + ChatColor.GREEN + w + ChatColor.WHITE + "]");
@@ -187,7 +188,7 @@ public class Commandwarp extends CoreCommand {
     }
 
     private void listWarpsServer(Player player, int page) {
-        List<Warp> warps = ParkWarp.getWarps();
+        List<Warp> warps = ParkWarp.getInstance().getWarps();
         List<Warp> list = new ArrayList<>();
         String server = Core.getServerType();
         list.addAll(warps.stream().filter(w -> w.getServer().equalsIgnoreCase(server)).collect(Collectors.toList()));
@@ -223,7 +224,7 @@ public class Commandwarp extends CoreCommand {
 
 
     public static void listWarps(Player player, int page) {
-        List<Warp> warps = ParkWarp.getWarps();
+        List<Warp> warps = ParkWarp.getInstance().getWarps();
         List<String> nlist = warps.stream().map(Warp::getName).collect(Collectors.toList());
         Collections.sort(nlist);
         if (nlist.size() < (page - 1) * 20 && page != 1) {

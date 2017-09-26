@@ -1,5 +1,6 @@
 package network.palace.parkwarp.commands;
 
+import network.palace.core.Core;
 import network.palace.core.command.CommandException;
 import network.palace.core.command.CommandMeta;
 import network.palace.core.command.CommandPermission;
@@ -8,7 +9,6 @@ import network.palace.core.player.Rank;
 import network.palace.parkwarp.ParkWarp;
 import network.palace.parkwarp.handlers.Warp;
 import network.palace.parkwarp.utils.WarpUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -22,17 +22,17 @@ public class Commanddelwarp extends CoreCommand {
 
     @Override
     protected void handleCommandUnspecific(CommandSender sender, String[] args) throws CommandException {
+        WarpUtil warpUtil = ParkWarp.getInstance().getWarpUtil();
         if (args.length == 1) {
             final String w = args[0];
-            final Warp warp = WarpUtil.findWarp(w);
-            if (WarpUtil.findWarp(w) == null) {
+            final Warp warp = warpUtil.findWarp(w);
+            if (warpUtil.findWarp(w) == null) {
                 sender.sendMessage(ChatColor.RED + "Warp not found!");
                 return;
             }
-            Bukkit.getScheduler().runTaskAsynchronously(ParkWarp.getInstance(), () -> {
-                ParkWarp.removeWarp(warp);
-                WarpUtil.removeWarp(warp);
-                WarpUtil.updateWarps();
+            Core.runTaskAsynchronously(() -> {
+                warpUtil.removeWarp(warp);
+                warpUtil.updateWarps();
                 sender.sendMessage(ChatColor.GRAY + "Warp " + w
                         + " has been removed.");
             });

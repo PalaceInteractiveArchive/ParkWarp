@@ -9,7 +9,6 @@ import network.palace.core.player.Rank;
 import network.palace.parkwarp.ParkWarp;
 import network.palace.parkwarp.handlers.Warp;
 import network.palace.parkwarp.utils.WarpUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -30,24 +29,23 @@ public class Commanduwarp extends CoreCommand {
                     + "Only players can use this command!");
             return;
         }
+        WarpUtil warpUtil = ParkWarp.getInstance().getWarpUtil();
         final Player player = (Player) sender;
         if (args.length == 1) {
             final String w = args[0];
-            if (!WarpUtil.warpExists(w)) {
+            if (!warpUtil.warpExists(w)) {
                 player.sendMessage(ChatColor.RED
                         + "A warp doesn't exist by that name! To add a warp, type /setwarp [Warp Name]");
                 return;
             }
             Location loc = player.getLocation();
-            final Warp warp = WarpUtil.findWarp(w);
+            final Warp warp = warpUtil.findWarp(w);
             final Warp newWarp = new Warp(w, Core.getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
                     loc.getPitch(), loc.getWorld().getName());
-            Bukkit.getScheduler().runTaskAsynchronously(ParkWarp.getInstance(), () -> {
-                ParkWarp.removeWarp(warp);
-                ParkWarp.addWarp(newWarp);
-                WarpUtil.removeWarp(warp);
-                WarpUtil.addWarp(newWarp);
-                WarpUtil.updateWarps();
+            Core.runTaskAsynchronously(() -> {
+                warpUtil.removeWarp(warp);
+                warpUtil.addWarp(newWarp);
+                warpUtil.updateWarps();
                 player.sendMessage(ChatColor.GRAY + "Warp " + w + " has been updated.");
             });
             return;
