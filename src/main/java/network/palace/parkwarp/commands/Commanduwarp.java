@@ -16,7 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandMeta(description = "Update Warp")
-@CommandPermission(rank = Rank.KNIGHT)
+@CommandPermission(rank = Rank.MOD)
 public class Commanduwarp extends CoreCommand {
 
     public Commanduwarp() {

@@ -88,28 +88,28 @@ public class Commandwarp extends CoreCommand {
             Rank rank = Core.getPlayerManager().getPlayer(player).getRank();
             if (warp.getName().toLowerCase().startsWith("dvc")) {
                 if (rank.getRankId() < Rank.DVCMEMBER.getRankId()) {
-                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.DVCMEMBER.getNameWithBrackets()
+                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.DVCMEMBER.getFormattedName()
                             + ChatColor.RED + " rank or above to use this warp!");
                     return;
                 }
             }
             if (warp.getName().toLowerCase().startsWith("share")) {
                 if (rank.getRankId() < Rank.SHAREHOLDER.getRankId()) {
-                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.SHAREHOLDER.getNameWithBrackets()
+                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.SHAREHOLDER.getFormattedName()
                             + ChatColor.RED + " rank or above to use this warp!");
                     return;
                 }
             }
             if (warp.getName().toLowerCase().startsWith("char")) {
                 if (rank.getRankId() < Rank.CHARACTER.getRankId()) {
-                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.CHARACTER.getNameWithBrackets()
+                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.CHARACTER.getFormattedName()
                             + ChatColor.RED + " rank or above to use this warp!");
                     return;
                 }
             }
             if (warp.getName().toLowerCase().startsWith("staff")) {
-                if (rank.getRankId() < Rank.SQUIRE.getRankId()) {
-                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.SQUIRE.getNameWithBrackets()
+                if (rank.getRankId() < Rank.TRAINEE.getRankId()) {
+                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.TRAINEE.getFormattedName()
                             + ChatColor.RED + " rank or above to use this warp!");
                     return;
                 }
@@ -142,7 +142,7 @@ public class Commandwarp extends CoreCommand {
                 return;
             }
             Rank rank = Core.getPlayerManager().getPlayer(player).getRank();
-            if (rank.getRankId() < Rank.SQUIRE.getRankId()) {
+            if (rank.getRankId() < Rank.TRAINEE.getRankId()) {
                 player.performCommand("warp " + args[0]);
                 return;
             }

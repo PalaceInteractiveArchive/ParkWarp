@@ -16,7 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandMeta(description = "Set a new warp")
-@CommandPermission(rank = Rank.KNIGHT)
+@CommandPermission(rank = Rank.MOD)
 public class Commandsetwarp extends CoreCommand {
 
     public Commandsetwarp() {
