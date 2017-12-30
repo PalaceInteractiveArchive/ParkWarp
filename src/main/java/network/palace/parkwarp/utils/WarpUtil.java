@@ -1,7 +1,6 @@
 package network.palace.parkwarp.utils;
 
 import network.palace.core.Core;
-import network.palace.parkwarp.ParkWarp;
 import network.palace.parkwarp.dashboard.packets.parks.PacketRefreshWarps;
 import network.palace.parkwarp.dashboard.packets.parks.PacketWarp;
 import network.palace.parkwarp.handlers.Warp;
@@ -18,8 +17,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class WarpUtil {
+    public List<Warp> warps = new ArrayList<>();
 
-    public static boolean warpExists(String warp) {
+    public boolean warpExistsSql(String warp) {
         try (Connection connection = Core.getSqlUtil().getConnection()) {
             PreparedStatement sql = connection
                     .prepareStatement("SELECT * FROM warps WHERE name = ?");
@@ -35,7 +35,7 @@ public class WarpUtil {
         }
     }
 
-    public static String getServer(String warp) {
+    public String getServer(String warp) {
         try (Connection connection = Core.getSqlUtil().getConnection()) {
             PreparedStatement sql = connection
                     .prepareStatement("SELECT * FROM warps WHERE name = ?");
@@ -52,7 +52,7 @@ public class WarpUtil {
         return "";
     }
 
-    public static Location getLocation(String warp) {
+    public Location getLocation(String warp) {
         try (Connection connection = Core.getSqlUtil().getConnection()) {
             PreparedStatement sql = connection
                     .prepareStatement("SELECT * FROM warps WHERE name=?");
@@ -74,12 +74,12 @@ public class WarpUtil {
         return null;
     }
 
-    public static void crossServerWarp(final UUID uuid, final String warp, final String server) {
+    public void crossServerWarp(final UUID uuid, final String warp, final String server) {
         PacketWarp packet = new PacketWarp(uuid, warp, server);
         Core.getDashboardConnection().send(packet.getJSON().toString());
     }
 
-    public synchronized static List<Warp> getWarps() {
+    public List<Warp> getWarpsSql() {
         List<String> names = new ArrayList<>();
         List<Warp> warps = new ArrayList<>();
         try (Connection connection = Core.getSqlUtil().getConnection()) {
@@ -113,7 +113,7 @@ public class WarpUtil {
         }
     }
 
-    public synchronized static void addWarp(Warp warp) {
+    public void addWarpSql(Warp warp) {
         try (Connection connection = Core.getSqlUtil().getConnection()) {
             PreparedStatement sql = connection
                     .prepareStatement("INSERT INTO warps values(0,?,?,?,?,?,?,?,?)");
@@ -132,7 +132,7 @@ public class WarpUtil {
         }
     }
 
-    public synchronized static void removeWarp(Warp warp) {
+    public void removeWarpSql(Warp warp) {
         try (Connection connection = Core.getSqlUtil().getConnection()) {
             PreparedStatement sql = connection
                     .prepareStatement("DELETE FROM warps WHERE name=?");
@@ -144,23 +144,40 @@ public class WarpUtil {
         }
     }
 
-    public static Warp findWarp(String name) {
-        List<Warp> warps = ParkWarp.getWarps();
-        for (Warp warp : warps) {
-            if (warp.getName().toLowerCase().equals(name.toLowerCase())) {
-                return warp;
-            }
+    public boolean warpExists(String name) {
+        return findWarp(name) != null;
+    }
+
+    public Warp findWarp(String name) {
+        for (Warp warp : getWarps()) {
+            if (warp.getName().equalsIgnoreCase(name)) return warp;
         }
         return null;
     }
 
-    public static void updateWarps() {
+    public void updateWarps() {
         PacketRefreshWarps packet = new PacketRefreshWarps(Core.getInstanceName());
-        Core.getDashboardConnection().send(packet.getJSON().toString());
+        Core.getDashboardConnection().send(packet);
     }
 
-    public synchronized static void refreshWarps() {
-        ParkWarp.clearWarps();
-        getWarps().forEach(ParkWarp::addWarp);
+    public void refreshWarps() {
+        clearWarps();
+        getWarpsSql().forEach(this::addWarp);
+    }
+
+    public List<Warp> getWarps() {
+        return new ArrayList<>(warps);
+    }
+
+    public void clearWarps() {
+        warps.clear();
+    }
+
+    public void removeWarp(Warp warp) {
+        warps.remove(warp);
+    }
+
+    public void addWarp(Warp warp) {
+        warps.add(warp);
     }
 }

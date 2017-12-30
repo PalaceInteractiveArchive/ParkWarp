@@ -15,43 +15,40 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandMeta(description = "Update Warp")
+@CommandMeta(description = "Set a new warp")
 @CommandPermission(rank = Rank.MOD)
-public class Commanduwarp extends CoreCommand {
+public class SetWarpCommand extends CoreCommand {
 
-    public Commanduwarp() {
-        super("uwarp");
+    public SetWarpCommand() {
+        super("setwarp");
     }
 
     @Override
     protected void handleCommandUnspecific(CommandSender sender, String[] args) throws CommandException {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED
-                    + "Only players can use this command!");
+            sender.sendMessage(ChatColor.RED + "Only players can use this command!");
             return;
         }
         final Player player = (Player) sender;
         if (args.length == 1) {
+            WarpUtil wu = ParkWarp.getInstance().getWarpUtil();
             final String w = args[0];
-            if (!WarpUtil.warpExists(w)) {
+            Location loc = player.getLocation();
+            if (wu.warpExistsSql(w)) {
                 player.sendMessage(ChatColor.RED
-                        + "A warp doesn't exist by that name! To add a warp, type /setwarp [Warp Name]");
+                        + "A warp already exists by that name! To change the location of that warp, type /uwarp [Warp Name]");
                 return;
             }
-            Location loc = player.getLocation();
-            final Warp warp = WarpUtil.findWarp(w);
-            final Warp newWarp = new Warp(w, Core.getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
+            final Warp warp = new Warp(w, Core.getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
                     loc.getPitch(), loc.getWorld().getName());
             Bukkit.getScheduler().runTaskAsynchronously(ParkWarp.getInstance(), () -> {
-                ParkWarp.removeWarp(warp);
-                ParkWarp.addWarp(newWarp);
-                WarpUtil.removeWarp(warp);
-                WarpUtil.addWarp(newWarp);
-                WarpUtil.updateWarps();
-                player.sendMessage(ChatColor.GRAY + "Warp " + w + " has been updated.");
+                wu.addWarp(warp);
+                wu.addWarpSql(warp);
+                wu.updateWarps();
+                player.sendMessage(ChatColor.GRAY + "Warp " + w + " set.");
             });
             return;
         }
-        player.sendMessage(ChatColor.RED + "/uwarp [Warp Name]");
+        player.sendMessage(ChatColor.RED + "/setwarp [Warp Name]");
     }
 }

@@ -4,8 +4,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import network.palace.core.Core;
 import network.palace.core.events.IncomingPacketEvent;
+import network.palace.parkwarp.ParkWarp;
 import network.palace.parkwarp.dashboard.packets.parks.PacketRefreshWarps;
-import network.palace.parkwarp.utils.WarpUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -28,10 +28,8 @@ public class PacketListener implements Listener {
              */
             case 62: {
                 PacketRefreshWarps packet = new PacketRefreshWarps().fromJSON(object);
-                if (packet.getServer().equals(Core.getInstanceName())) {
-                    return;
-                }
-                WarpUtil.refreshWarps();
+                if (packet.getServer().equals(Core.getInstanceName())) return;
+                ParkWarp.getInstance().getWarpUtil().refreshWarps();
                 break;
             }
         }
