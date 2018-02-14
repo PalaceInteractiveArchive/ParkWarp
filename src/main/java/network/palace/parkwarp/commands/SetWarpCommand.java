@@ -15,10 +15,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandMeta(description = "Set a new warp")
-@CommandPermission(rank = Rank.KNIGHT)
-public class Commandsetwarp extends CoreCommand {
+@CommandPermission(rank = Rank.MOD)
+public class SetWarpCommand extends CoreCommand {
 
-    public Commandsetwarp() {
+    public SetWarpCommand() {
         super("setwarp");
     }
 
@@ -31,18 +31,30 @@ public class Commandsetwarp extends CoreCommand {
         }
         final Player player = (Player) sender;
         if (args.length == 1) {
+            WarpUtil wu = ParkWarp.getInstance().getWarpUtil();
             final String w = args[0];
             Location loc = player.getLocation();
+<<<<<<< HEAD:src/main/java/network/palace/parkwarp/commands/Commandsetwarp.java
             if (warpUtil.warpExists(w)) {
+=======
+            if (wu.warpExistsSql(w)) {
+>>>>>>> master:src/main/java/network/palace/parkwarp/commands/SetWarpCommand.java
                 player.sendMessage(ChatColor.RED
                         + "A warp already exists by that name! To change the location of that warp, type /uwarp [Warp Name]");
                 return;
             }
             final Warp warp = new Warp(w, Core.getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
                     loc.getPitch(), loc.getWorld().getName());
+<<<<<<< HEAD:src/main/java/network/palace/parkwarp/commands/Commandsetwarp.java
             Core.runTaskAsynchronously(() -> {
                 warpUtil.addWarp(warp);
                 warpUtil.updateWarps();
+=======
+            Bukkit.getScheduler().runTaskAsynchronously(ParkWarp.getInstance(), () -> {
+                wu.addWarp(warp);
+                wu.addWarpSql(warp);
+                wu.updateWarps();
+>>>>>>> master:src/main/java/network/palace/parkwarp/commands/SetWarpCommand.java
                 player.sendMessage(ChatColor.GRAY + "Warp " + w + " set.");
             });
             return;

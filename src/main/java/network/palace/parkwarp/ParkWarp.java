@@ -5,10 +5,10 @@ import network.palace.core.plugin.Plugin;
 import network.palace.core.plugin.PluginInfo;
 import network.palace.parkwarp.commands.*;
 import network.palace.parkwarp.dashboard.PacketListener;
-import network.palace.parkwarp.handlers.Warp;
 import network.palace.parkwarp.utils.WarpUtil;
 import org.bukkit.Bukkit;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,24 +16,31 @@ import java.util.List;
 public class ParkWarp extends Plugin {
     private static ParkWarp instance;
     private List<Warp> warps = new ArrayList<>();
+=======
+@PluginInfo(name = "ParkWarp", version = "1.0.5", depend = "Core", canReload = true)
+public class ParkWarp extends Plugin {
+    @Getter private static ParkWarp instance;
+>>>>>>> master
     @Getter private WarpUtil warpUtil;
 
     @Override
     protected void onPluginEnable() throws Exception {
-        this.instance = this;
+        instance = this;
+        warpUtil = new WarpUtil();
         Bukkit.getPluginManager().registerEvents(new PacketListener(), this);
         warpUtil = new WarpUtil();
         warpUtil.refreshWarps();
         getLogger().info("Warps loaded!");
-        registerCommand(new Commanddelwarp());
-        registerCommand(new Commandsetwarp());
-        registerCommand(new Commanduwarp());
-        registerCommand(new Commandwarp());
-        registerCommand(new Commandwrl());
+        registerCommand(new DelWarpCommand());
+        registerCommand(new SetWarpCommand());
+        registerCommand(new UpdateWarpCommand());
+        registerCommand(new WarpCommand());
+        registerCommand(new WRLCommand());
     }
 
     @Override
     public void onPluginDisable() {
+<<<<<<< HEAD
         clearWarps();
     }
 
@@ -55,5 +62,8 @@ public class ParkWarp extends Plugin {
 
     public void addWarp(Warp warp) {
         warps.add(warp);
+=======
+        warpUtil.clearWarps();
+>>>>>>> master
     }
 }

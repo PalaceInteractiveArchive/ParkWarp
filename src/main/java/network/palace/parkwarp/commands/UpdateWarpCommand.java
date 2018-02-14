@@ -15,10 +15,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandMeta(description = "Update Warp")
-@CommandPermission(rank = Rank.KNIGHT)
-public class Commanduwarp extends CoreCommand {
+@CommandPermission(rank = Rank.MOD)
+public class UpdateWarpCommand extends CoreCommand {
 
-    public Commanduwarp() {
+    public UpdateWarpCommand() {
         super("uwarp");
     }
 
@@ -32,13 +32,19 @@ public class Commanduwarp extends CoreCommand {
         WarpUtil warpUtil = ParkWarp.getInstance().getWarpUtil();
         final Player player = (Player) sender;
         if (args.length == 1) {
+            WarpUtil wu = ParkWarp.getInstance().getWarpUtil();
             final String w = args[0];
+<<<<<<< HEAD:src/main/java/network/palace/parkwarp/commands/Commanduwarp.java
             if (!warpUtil.warpExists(w)) {
+=======
+            if (!wu.warpExistsSql(w)) {
+>>>>>>> master:src/main/java/network/palace/parkwarp/commands/UpdateWarpCommand.java
                 player.sendMessage(ChatColor.RED
                         + "A warp doesn't exist by that name! To add a warp, type /setwarp [Warp Name]");
                 return;
             }
             Location loc = player.getLocation();
+<<<<<<< HEAD:src/main/java/network/palace/parkwarp/commands/Commanduwarp.java
             final Warp warp = warpUtil.findWarp(w);
             final Warp newWarp = new Warp(w, Core.getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
                     loc.getPitch(), loc.getWorld().getName());
@@ -46,6 +52,17 @@ public class Commanduwarp extends CoreCommand {
                 warpUtil.removeWarp(warp);
                 warpUtil.addWarp(newWarp);
                 warpUtil.updateWarps();
+=======
+            final Warp warp = wu.findWarp(w);
+            final Warp newWarp = new Warp(w, Core.getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
+                    loc.getPitch(), loc.getWorld().getName());
+            Core.runTaskAsynchronously(() -> {
+                wu.removeWarp(warp);
+                wu.addWarp(newWarp);
+                wu.removeWarpSql(warp);
+                wu.addWarpSql(newWarp);
+                wu.updateWarps();
+>>>>>>> master:src/main/java/network/palace/parkwarp/commands/UpdateWarpCommand.java
                 player.sendMessage(ChatColor.GRAY + "Warp " + w + " has been updated.");
             });
             return;

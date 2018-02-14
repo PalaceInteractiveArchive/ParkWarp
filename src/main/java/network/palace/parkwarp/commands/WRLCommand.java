@@ -13,10 +13,10 @@ import org.bukkit.command.CommandSender;
  * Created by Marc on 11/21/16
  */
 @CommandMeta(description = "Reload warps")
-@CommandPermission(rank = Rank.KNIGHT)
-public class Commandwrl extends CoreCommand {
+@CommandPermission(rank = Rank.MOD)
+public class WRLCommand extends CoreCommand {
 
-    public Commandwrl() {
+    public WRLCommand() {
         super("wrl");
     }
 
