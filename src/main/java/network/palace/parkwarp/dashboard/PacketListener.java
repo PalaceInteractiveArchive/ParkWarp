@@ -28,13 +28,7 @@ public class PacketListener implements Listener {
              */
             case 62: {
                 PacketRefreshWarps packet = new PacketRefreshWarps().fromJSON(object);
-<<<<<<< HEAD
-                if (packet.getServer().equals(Core.getInstanceName())) {
-                    return;
-                }
-=======
                 if (packet.getServer().equals(Core.getInstanceName())) return;
->>>>>>> master
                 ParkWarp.getInstance().getWarpUtil().refreshWarps();
                 break;
             }

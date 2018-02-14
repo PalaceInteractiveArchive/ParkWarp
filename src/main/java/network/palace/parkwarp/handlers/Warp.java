@@ -7,20 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-<<<<<<< HEAD
-@Getter
-@Setter
-@AllArgsConstructor
-public class Warp {
-    private String name;
-    private String server;
-    private double x;
-    private double y;
-    private double z;
-    private float yaw;
-    private float pitch;
-    private String world;
-=======
 @AllArgsConstructor
 @Setter
 public class Warp {
@@ -32,7 +18,6 @@ public class Warp {
     @Getter public float yaw;
     @Getter public float pitch;
     public String world;
->>>>>>> master
 
     public World getWorld() {
         if (Bukkit.getWorlds().get(0).getName().equals(world)) {

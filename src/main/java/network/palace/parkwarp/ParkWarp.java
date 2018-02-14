@@ -8,19 +8,9 @@ import network.palace.parkwarp.dashboard.PacketListener;
 import network.palace.parkwarp.utils.WarpUtil;
 import org.bukkit.Bukkit;
 
-<<<<<<< HEAD
-import java.util.ArrayList;
-import java.util.List;
-
-@PluginInfo(name = "ParkWarp", version = "1.0.4", depend = "Core", canReload = true)
-public class ParkWarp extends Plugin {
-    private static ParkWarp instance;
-    private List<Warp> warps = new ArrayList<>();
-=======
 @PluginInfo(name = "ParkWarp", version = "1.0.5", depend = "Core", canReload = true)
 public class ParkWarp extends Plugin {
     @Getter private static ParkWarp instance;
->>>>>>> master
     @Getter private WarpUtil warpUtil;
 
     @Override
@@ -28,7 +18,6 @@ public class ParkWarp extends Plugin {
         instance = this;
         warpUtil = new WarpUtil();
         Bukkit.getPluginManager().registerEvents(new PacketListener(), this);
-        warpUtil = new WarpUtil();
         warpUtil.refreshWarps();
         getLogger().info("Warps loaded!");
         registerCommand(new DelWarpCommand());
@@ -40,30 +29,6 @@ public class ParkWarp extends Plugin {
 
     @Override
     public void onPluginDisable() {
-<<<<<<< HEAD
-        clearWarps();
-    }
-
-    public static ParkWarp getInstance() {
-        return instance;
-    }
-
-    public List<Warp> getWarps() {
-        return new ArrayList<>(warps);
-    }
-
-    public void clearWarps() {
-        warps.clear();
-    }
-
-    public void removeWarp(Warp warp) {
-        warps.remove(warp);
-    }
-
-    public void addWarp(Warp warp) {
-        warps.add(warp);
-=======
         warpUtil.clearWarps();
->>>>>>> master
     }
 }
