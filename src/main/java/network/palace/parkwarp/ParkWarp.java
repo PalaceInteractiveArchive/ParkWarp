@@ -8,7 +8,7 @@ import network.palace.parkwarp.dashboard.PacketListener;
 import network.palace.parkwarp.utils.WarpUtil;
 import org.bukkit.Bukkit;
 
-@PluginInfo(name = "ParkWarp", version = "1.0.5", depend = "Core", canReload = true)
+@PluginInfo(name = "ParkWarp", version = "1.1-mongo", depend = "Core", canReload = true)
 public class ParkWarp extends Plugin {
     @Getter private static ParkWarp instance;
     @Getter private WarpUtil warpUtil;
