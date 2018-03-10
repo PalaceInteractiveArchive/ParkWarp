@@ -6,11 +6,7 @@
 
     <groupId>network.palace</groupId>
     <artifactId>ParkWarp</artifactId>
-<<<<<<< HEAD
-    <version>1.0.4</version>
-=======
     <version>1.0.5</version>
->>>>>>> master
     <repositories>
         <repository>
             <id>palace</id>
@@ -37,11 +33,7 @@
         <dependency>
             <groupId>network.palace</groupId>
             <artifactId>Core</artifactId>
-<<<<<<< HEAD
-            <version>2.0</version>
-=======
-            <version>2.0.6</version>
->>>>>>> master
+            <version>2.1-mongo</version>
             <type>jar</type>
         </dependency>
         <dependency>

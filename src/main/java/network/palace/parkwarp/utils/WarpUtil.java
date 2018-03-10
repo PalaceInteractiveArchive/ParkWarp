@@ -1,22 +1,19 @@
 package network.palace.parkwarp.utils;
 
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Filters;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import com.mongodb.client.FindIterable;
 import network.palace.core.Core;
 import network.palace.parkwarp.dashboard.packets.parks.PacketRefreshWarps;
 import network.palace.parkwarp.dashboard.packets.parks.PacketWarp;
 import network.palace.parkwarp.handlers.Warp;
 import org.bson.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 public class WarpUtil {
 
-    private MongoCollection<Document> warps;
+    private List<Warp> warps = new ArrayList<>();
 
     public WarpUtil() {
         refreshWarps();
@@ -28,7 +25,19 @@ public class WarpUtil {
     }
 
     public void refreshWarps() {
-        warps = Core.getMongoHandler().getDatabase().getCollection("warps");
+        warps.clear();
+        FindIterable<Document> list = Core.getMongoHandler().getWarps();
+        for (Document d : list) {
+            Warp w = new Warp(d.getString("name"),
+                    d.getString("server"),
+                    d.getDouble("x"),
+                    d.getDouble("y"),
+                    d.getDouble("z"),
+                    d.getInteger("yaw"),
+                    d.getInteger("pitch"),
+                    d.getString("world"));
+            warps.add(w);
+        }
     }
 
     public boolean warpExists(String name) {
@@ -36,9 +45,12 @@ public class WarpUtil {
     }
 
     public Warp findWarp(String name) {
-        Document document = warps.find(Filters.not(Filters.eq(name, null))).first();
-        if (document == null) return null;
-        return new Warp(name, document.getString("server"), document.getDouble("x"), document.getDouble("y"), document.getDouble("z"), document.get("yaw", Float.class), document.get("pitch", Float.class), document.getString("world"));
+        for (Warp w : getWarps()) {
+            if (w.getName().equalsIgnoreCase(name)) {
+                return w;
+            }
+        }
+        return null;
     }
 
     public void updateWarps() {
@@ -47,31 +59,21 @@ public class WarpUtil {
     }
 
     public List<Warp> getWarps() {
-        Document document = warps.find().first();
-        if (document == null) {
-            return Collections.emptyList();
-        }
-
-        return document.keySet().stream().map(this::findWarp).collect(Collectors.toList());
+        return new ArrayList<>(warps);
     }
 
     public void clearWarps() {
-        getWarps().forEach(this::removeWarp);
+        warps.clear();
     }
 
     public void removeWarp(Warp warp) {
-        warps.deleteOne(Filters.not(Filters.eq(warp.getName(), null)));
+        if (warp == null) return;
+        Core.getMongoHandler().deleteWarp(warp.getName());
+        warps.remove(warp);
     }
 
     public void addWarp(Warp warp) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("server", warp.getServer());
-        map.put("x", warp.getX());
-        map.put("y", warp.getY());
-        map.put("z", warp.getZ());
-        map.put("yaw", warp.getYaw());
-        map.put("pitch", warp.getPitch());
-        map.put("world", warp.getWorld().getName());
-        warps.insertOne(new Document(warp.getName(), map));
+        warps.add(warp);
+        Core.getMongoHandler().createWarp(warp.getName(), warp.getServer(), warp.getX(), warp.getY(), warp.getZ(), warp.getYaw(), warp.getPitch(), warp.getWorldName());
     }
 }

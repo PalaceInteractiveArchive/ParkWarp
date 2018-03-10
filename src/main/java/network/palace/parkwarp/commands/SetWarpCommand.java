@@ -9,7 +9,6 @@ import network.palace.core.player.Rank;
 import network.palace.parkwarp.ParkWarp;
 import network.palace.parkwarp.handlers.Warp;
 import network.palace.parkwarp.utils.WarpUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -41,8 +40,7 @@ public class SetWarpCommand extends CoreCommand {
             }
             final Warp warp = new Warp(w, Core.getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
                     loc.getPitch(), loc.getWorld().getName());
-            Bukkit.getScheduler().runTaskAsynchronously(ParkWarp.getInstance(), () -> {
-                wu.addWarp(warp);
+            Core.runTaskAsynchronously(() -> {
                 wu.addWarp(warp);
                 wu.updateWarps();
                 player.sendMessage(ChatColor.GRAY + "Warp " + w + " set.");

@@ -1,9 +1,5 @@
 package network.palace.parkwarp.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import network.palace.core.Core;
 import network.palace.core.command.CommandException;
 import network.palace.core.command.CommandMeta;
@@ -17,6 +13,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CommandMeta(description = "Warp to a location")
 public class WarpCommand extends CoreCommand {
@@ -224,17 +225,11 @@ public class WarpCommand extends CoreCommand {
 
 
     public static void listWarps(Player player, int page) {
-        List<String> names = ParkWarp.getInstance().getWarpUtil().getWarps().stream().map(Warp::getName).sorted().collect(Collector.<String, List<String>, List<String>>of(ArrayList::new, List::add, (left, right) -> {
-            left.addAll(right);
-            return left;
-        }, list -> {
-            int subListStart = (page - 1) * 20;
-            if (list.size() < subListStart && page != 1) {
-                return list.subList(subListStart, Math.max(page * 20, list.size()));
-            }
-
-            return list;
-        }));
+        List<String> names = new ArrayList<>();
+        for (Warp w : ParkWarp.getInstance().getWarpUtil().getWarps()) {
+            names.add(w.getName());
+        }
+        Collections.sort(names);
         FormattedMessage msg = new FormattedMessage("Warps (Page " + page + "):\n").color(ChatColor.GRAY);
         for (int i = 0; i < names.size(); i++) {
             String warp = names.get(i);

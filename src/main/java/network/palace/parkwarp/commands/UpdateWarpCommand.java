@@ -45,8 +45,6 @@ public class UpdateWarpCommand extends CoreCommand {
             Core.runTaskAsynchronously(() -> {
                 wu.removeWarp(warp);
                 wu.addWarp(newWarp);
-                wu.removeWarp(warp);
-                wu.addWarp(newWarp);
                 wu.updateWarps();
                 player.sendMessage(ChatColor.GRAY + "Warp " + w + " has been updated.");
             });
