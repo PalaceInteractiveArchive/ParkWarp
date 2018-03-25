@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,10 +50,11 @@ public class WarpCommand extends CoreCommand {
                         tp.eject();
                         sender.sendMessage(ChatColor.BLUE + tp.getName() + " has arrived at " + ChatColor.WHITE +
                                 "[" + ChatColor.GREEN + w + ChatColor.WHITE + "]");
-                        Bukkit.getScheduler().runTaskLater(ParkWarp.getInstance(), () -> tp.teleport(warp.getLocation()), 10L);
+                        Bukkit.getScheduler().runTaskLater(ParkWarp.getInstance(), () -> tp.teleport(warp.getLocation(),
+                                PlayerTeleportEvent.TeleportCause.COMMAND), 10L);
                         return;
                     }
-                    tp.teleport(warp.getLocation());
+                    tp.teleport(warp.getLocation(), PlayerTeleportEvent.TeleportCause.COMMAND);
                     tp.sendMessage(ChatColor.BLUE + "You have arrived at " + ChatColor.WHITE + "[" +
                             ChatColor.GREEN + w + ChatColor.WHITE + "]");
                     sender.sendMessage(ChatColor.BLUE + tp.getName() + " has arrived at " + ChatColor.WHITE + "[" +
@@ -126,7 +128,7 @@ public class WarpCommand extends CoreCommand {
                     player.sendMessage(ChatColor.RED + "You can't teleport while on a ride!");
                     return;
                 }
-                player.teleport(warp.getLocation());
+                player.teleport(warp.getLocation(), PlayerTeleportEvent.TeleportCause.COMMAND);
                 player.sendMessage(ChatColor.BLUE + "You have arrived at "
                         + ChatColor.WHITE + "[" + ChatColor.GREEN + w
                         + ChatColor.WHITE + "]");
@@ -174,7 +176,7 @@ public class WarpCommand extends CoreCommand {
                     tp.sendMessage(ChatColor.RED + "You can't teleport while on a ride!");
                     return;
                 }
-                tp.teleport(warp.getLocation());
+                tp.teleport(warp.getLocation(), PlayerTeleportEvent.TeleportCause.COMMAND);
                 tp.sendMessage(ChatColor.BLUE + "You have arrived at "
                         + ChatColor.WHITE + "[" + ChatColor.GREEN + w
                         + ChatColor.WHITE + "]");
