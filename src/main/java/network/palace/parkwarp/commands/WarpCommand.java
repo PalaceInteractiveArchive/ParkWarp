@@ -5,7 +5,9 @@ import network.palace.core.command.CommandException;
 import network.palace.core.command.CommandMeta;
 import network.palace.core.command.CoreCommand;
 import network.palace.core.message.FormattedMessage;
+import network.palace.core.player.CPlayer;
 import network.palace.core.player.Rank;
+import network.palace.core.utils.MiscUtil;
 import network.palace.parkwarp.ParkWarp;
 import network.palace.parkwarp.handlers.Warp;
 import org.bukkit.Bukkit;
@@ -18,7 +20,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @CommandMeta(description = "Warp to a location")
 public class WarpCommand extends CoreCommand {
@@ -31,11 +32,11 @@ public class WarpCommand extends CoreCommand {
     protected void handleCommandUnspecific(CommandSender sender, String[] args) throws CommandException {
         if (!(sender instanceof Player)) {
             if (args.length == 2) {
-                if (Bukkit.getPlayer(args[1]) == null) {
+                if (Core.getPlayerManager().getPlayer(args[1]) == null) {
                     sender.sendMessage(ChatColor.RED + "Player not found.");
                     return;
                 }
-                final Player tp = Bukkit.getPlayer(args[1]);
+                final CPlayer tp = Core.getPlayerManager().getPlayer(args[1]);
                 final String w = args[0];
                 Warp warp = ParkWarp.getInstance().getWarpUtil().findWarp(w);
                 if (warp == null) {
@@ -47,7 +48,7 @@ public class WarpCommand extends CoreCommand {
                 final Location loc = warp.getLocation();
                 if (targetServer.equals(currentServer)) {
                     if (tp.isInsideVehicle()) {
-                        tp.eject();
+                        tp.getBukkitPlayer().eject();
                         sender.sendMessage(ChatColor.BLUE + tp.getName() + " has arrived at " + ChatColor.WHITE +
                                 "[" + ChatColor.GREEN + w + ChatColor.WHITE + "]");
                         Bukkit.getScheduler().runTaskLater(ParkWarp.getInstance(), () -> tp.teleport(warp.getLocation(),
@@ -68,14 +69,14 @@ public class WarpCommand extends CoreCommand {
             sender.sendMessage(ChatColor.RED + "/warp [Warp Name] [Username]");
             return;
         }
-        final Player player = (Player) sender;
+        CPlayer player = Core.getPlayerManager().getPlayer(((Player) sender).getUniqueId());
         if (args.length == 1) {
-            if (isInt(args[0])) {
-                listWarps(player, Integer.parseInt(args[0]));
+            if (MiscUtil.checkIfInt(args[0])) {
+                listWarps(player, Integer.parseInt(args[0]), false);
                 return;
             }
             if (args[0].equalsIgnoreCase("-s")) {
-                listWarpsServer(player, 1);
+                listWarps(player, 1, true);
                 return;
             }
             final String w = args[0];
@@ -84,7 +85,7 @@ public class WarpCommand extends CoreCommand {
                 player.sendMessage(ChatColor.RED + "Warp not found!");
                 return;
             }
-            Rank rank = Core.getPlayerManager().getPlayer(player).getRank();
+            Rank rank = player.getRank();
             if (warp.getName().toLowerCase().startsWith("dvc")) {
                 if (rank.getRankId() < Rank.DWELLER.getRankId()) {
                     player.sendMessage(ChatColor.RED + "You must be the " + Rank.DWELLER.getFormattedName()
@@ -140,14 +141,14 @@ public class WarpCommand extends CoreCommand {
         }
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("-s")) {
-                if (isInt(args[1])) {
-                    listWarpsServer(player, Integer.parseInt(args[1]));
+                if (MiscUtil.checkIfInt(args[1])) {
+                    listWarps(player, Integer.parseInt(args[1]), true);
                     return;
                 }
-                listWarpsServer(player, 1);
+                listWarps(player, 1, true);
                 return;
             }
-            Rank rank = Core.getPlayerManager().getPlayer(player).getRank();
+            Rank rank = player.getRank();
             if (rank.getRankId() < Rank.TRAINEE.getRankId()) {
                 player.performCommand("warp " + args[0]);
                 return;
@@ -189,53 +190,33 @@ public class WarpCommand extends CoreCommand {
                 return;
             }
         }
-        listWarps(player, 1);
+        listWarps(player, 1, false);
     }
 
-    private void listWarpsServer(Player player, int page) {
-        List<Warp> warps = ParkWarp.getInstance().getWarpUtil().getWarps();
-        String server = Core.getServerType();
-        List<Warp> list = warps.stream().filter(w -> w.getServer().equalsIgnoreCase(server)).collect(Collectors.toList());
-        List<String> nlist = list.stream().map(Warp::getName).sorted().collect(Collectors.toList());
-        if (nlist.size() < (page - 1) * 20 && page != 1) {
+    /**
+     * List warps to a player depending on certain parameters
+     *
+     * @param player     the player to message the list to
+     * @param page       the page number to show
+     * @param serverOnly whether or not to only list warps on the current server
+     */
+    public void listWarps(CPlayer player, int page, boolean serverOnly) {
+        List<String> allWarps = new ArrayList<>();
+        for (Warp w : ParkWarp.getInstance().getWarpUtil().getWarps()) {
+            if (serverOnly && !w.getServer().equalsIgnoreCase(Core.getServerType())) continue;
+            allWarps.add(w.getName());
+        }
+        Collections.sort(allWarps);
+        if (page < 1 || allWarps.size() < ((page - 1) * 20)) {
             page = 1;
         }
         int max = page * 20;
-        List<String> names = nlist.subList(20 * (page - 1), nlist.size() < max ? nlist.size() : max);
-        FormattedMessage msg = new FormattedMessage("Server Warps (Page " + page + "):\n").color(ChatColor.GOLD);
+        List<String> names = allWarps.subList(20 * (page - 1), allWarps.size() < max ? allWarps.size() : max);
+        FormattedMessage msg = new FormattedMessage((serverOnly ? "Server " : "") + "Warps (Page " + page + "):\n")
+                .color(ChatColor.GOLD);
         for (int i = 0; i < names.size(); i++) {
             String warp = names.get(i);
-            if (i == (names.size() - 1)) {
-                msg.then(warp).color(ChatColor.GRAY).command("/warp " + warp).tooltip(ChatColor.GREEN +
-                        "Click to warp to " + ChatColor.BLUE + warp + ChatColor.GREEN + "!");
-                continue;
-            }
-            msg.then(warp + ", ").color(ChatColor.GRAY).command("/warp " + warp).tooltip(ChatColor.GREEN +
-                    "Click to warp to " + ChatColor.BLUE + warp + ChatColor.GREEN + "!");
-        }
-        msg.send(player);
-    }
-
-    private boolean isInt(String s) {
-        try {
-            Integer.parseInt(s);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-
-    public static void listWarps(Player player, int page) {
-        List<String> names = new ArrayList<>();
-        for (Warp w : ParkWarp.getInstance().getWarpUtil().getWarps()) {
-            names.add(w.getName());
-        }
-        Collections.sort(names);
-        FormattedMessage msg = new FormattedMessage("Warps (Page " + page + "):\n").color(ChatColor.GRAY);
-        for (int i = 0; i < names.size(); i++) {
-            String warp = names.get(i);
-            if (i == (names.size() - 1)) {
+            if (i >= (names.size() - 1)) {
                 msg.then(warp).color(ChatColor.GRAY).command("/warp " + warp).tooltip(ChatColor.GREEN +
                         "Click to warp to " + ChatColor.BLUE + warp + ChatColor.GREEN + "!");
                 continue;
