@@ -10,20 +10,24 @@ import org.bukkit.World;
 @AllArgsConstructor
 @Setter
 public class Warp {
-    @Getter public String name;
-    @Getter public String server;
-    @Getter public double x;
-    @Getter public double y;
-    @Getter public double z;
-    @Getter public float yaw;
-    @Getter public float pitch;
-    public String world;
+    @Getter private String name;
+    @Getter private String server;
+    @Getter private double x;
+    @Getter private double y;
+    @Getter private double z;
+    @Getter private float yaw;
+    @Getter private float pitch;
+    private String world;
 
     public World getWorld() {
         if (Bukkit.getWorlds().get(0).getName().equals(world)) {
             return Bukkit.getWorld(world);
         }
         return null;
+    }
+
+    public String getWorldName() {
+        return world;
     }
 
     public Location getLocation() {

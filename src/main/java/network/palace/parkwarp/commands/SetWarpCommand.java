@@ -9,7 +9,6 @@ import network.palace.core.player.Rank;
 import network.palace.parkwarp.ParkWarp;
 import network.palace.parkwarp.handlers.Warp;
 import network.palace.parkwarp.utils.WarpUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -34,16 +33,15 @@ public class SetWarpCommand extends CoreCommand {
             WarpUtil wu = ParkWarp.getInstance().getWarpUtil();
             final String w = args[0];
             Location loc = player.getLocation();
-            if (wu.warpExistsSql(w)) {
+            if (wu.warpExists(w)) {
                 player.sendMessage(ChatColor.RED
                         + "A warp already exists by that name! To change the location of that warp, type /uwarp [Warp Name]");
                 return;
             }
             final Warp warp = new Warp(w, Core.getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
                     loc.getPitch(), loc.getWorld().getName());
-            Bukkit.getScheduler().runTaskAsynchronously(ParkWarp.getInstance(), () -> {
+            Core.runTaskAsynchronously(() -> {
                 wu.addWarp(warp);
-                wu.addWarpSql(warp);
                 wu.updateWarps();
                 player.sendMessage(ChatColor.GRAY + "Warp " + w + " set.");
             });

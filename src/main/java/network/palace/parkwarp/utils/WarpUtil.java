@@ -1,77 +1,22 @@
 package network.palace.parkwarp.utils;
 
+import com.mongodb.client.FindIterable;
 import network.palace.core.Core;
 import network.palace.parkwarp.dashboard.packets.parks.PacketRefreshWarps;
 import network.palace.parkwarp.dashboard.packets.parks.PacketWarp;
 import network.palace.parkwarp.handlers.Warp;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bson.Document;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 public class WarpUtil {
-    public List<Warp> warps = new ArrayList<>();
 
-    public boolean warpExistsSql(String warp) {
-        try (Connection connection = Core.getSqlUtil().getConnection()) {
-            PreparedStatement sql = connection
-                    .prepareStatement("SELECT * FROM warps WHERE name = ?");
-            sql.setString(1, warp);
-            ResultSet result = sql.executeQuery();
-            boolean contains = result.next();
-            result.close();
-            sql.close();
-            return contains;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+    private List<Warp> warps = new ArrayList<>();
 
-    public String getServer(String warp) {
-        try (Connection connection = Core.getSqlUtil().getConnection()) {
-            PreparedStatement sql = connection
-                    .prepareStatement("SELECT * FROM warps WHERE name = ?");
-            sql.setString(1, warp);
-            ResultSet result = sql.executeQuery();
-            result.next();
-            String server = result.getString("server");
-            result.close();
-            sql.close();
-            return server;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    public Location getLocation(String warp) {
-        try (Connection connection = Core.getSqlUtil().getConnection()) {
-            PreparedStatement sql = connection
-                    .prepareStatement("SELECT * FROM warps WHERE name=?");
-            sql.setString(1, warp);
-            ResultSet result = sql.executeQuery();
-            result.next();
-            String world = result.getString("world");
-            double x = result.getDouble("x");
-            double y = result.getDouble("y");
-            double z = result.getDouble("z");
-            float yaw = result.getFloat("yaw");
-            float pitch = result.getFloat("pitch");
-            result.close();
-            sql.close();
-            return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public WarpUtil() {
+        refreshWarps();
     }
 
     public void crossServerWarp(final UUID uuid, final String warp, final String server) {
@@ -79,68 +24,19 @@ public class WarpUtil {
         Core.getDashboardConnection().send(packet.getJSON().toString());
     }
 
-    public List<Warp> getWarpsSql() {
-        List<String> names = new ArrayList<>();
-        List<Warp> warps = new ArrayList<>();
-        try (Connection connection = Core.getSqlUtil().getConnection()) {
-            PreparedStatement sql = connection
-                    .prepareStatement("SELECT * FROM warps");
-            ResultSet result = sql.executeQuery();
-            while (result.next()) {
-                names.add(result.getString("name"));
-                warps.add(new Warp(result.getString("name"),
-                        result.getString("server"), result.getDouble("x"),
-                        result.getDouble("y"), result.getDouble("z"),
-                        result.getFloat("yaw"), result.getFloat("pitch"),
-                        result.getString("world")));
-            }
-            result.close();
-            sql.close();
-            Collections.sort(names);
-            List<Warp> finalWarps = new ArrayList<>();
-            for (String name : names) {
-                for (Warp warp : warps) {
-                    if (warp.getName().equals(name)) {
-                        finalWarps.add(warp);
-                        break;
-                    }
-                }
-            }
-            return finalWarps;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    public void addWarpSql(Warp warp) {
-        try (Connection connection = Core.getSqlUtil().getConnection()) {
-            PreparedStatement sql = connection
-                    .prepareStatement("INSERT INTO warps values(0,?,?,?,?,?,?,?,?)");
-            sql.setString(1, warp.getName());
-            sql.setDouble(2, warp.getX());
-            sql.setDouble(3, warp.getY());
-            sql.setDouble(4, warp.getZ());
-            sql.setFloat(5, warp.getYaw());
-            sql.setFloat(6, warp.getPitch());
-            sql.setString(7, warp.getWorld().getName());
-            sql.setString(8, warp.getServer());
-            sql.execute();
-            sql.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void removeWarpSql(Warp warp) {
-        try (Connection connection = Core.getSqlUtil().getConnection()) {
-            PreparedStatement sql = connection
-                    .prepareStatement("DELETE FROM warps WHERE name=?");
-            sql.setString(1, warp.getName());
-            sql.execute();
-            sql.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public void refreshWarps() {
+        warps.clear();
+        FindIterable<Document> list = Core.getMongoHandler().getWarps();
+        for (Document d : list) {
+            Warp w = new Warp(d.getString("name"),
+                    d.getString("server"),
+                    d.getDouble("x"),
+                    d.getDouble("y"),
+                    d.getDouble("z"),
+                    d.getInteger("yaw"),
+                    d.getInteger("pitch"),
+                    d.getString("world"));
+            warps.add(w);
         }
     }
 
@@ -149,8 +45,10 @@ public class WarpUtil {
     }
 
     public Warp findWarp(String name) {
-        for (Warp warp : getWarps()) {
-            if (warp.getName().equalsIgnoreCase(name)) return warp;
+        for (Warp w : getWarps()) {
+            if (w.getName().equalsIgnoreCase(name)) {
+                return w;
+            }
         }
         return null;
     }
@@ -158,11 +56,6 @@ public class WarpUtil {
     public void updateWarps() {
         PacketRefreshWarps packet = new PacketRefreshWarps(Core.getInstanceName());
         Core.getDashboardConnection().send(packet);
-    }
-
-    public void refreshWarps() {
-        clearWarps();
-        getWarpsSql().forEach(this::addWarp);
     }
 
     public List<Warp> getWarps() {
@@ -174,10 +67,13 @@ public class WarpUtil {
     }
 
     public void removeWarp(Warp warp) {
+        if (warp == null) return;
+        Core.getMongoHandler().deleteWarp(warp.getName());
         warps.remove(warp);
     }
 
     public void addWarp(Warp warp) {
         warps.add(warp);
+        Core.getMongoHandler().createWarp(warp.getName(), warp.getServer(), warp.getX(), warp.getY(), warp.getZ(), warp.getYaw(), warp.getPitch(), warp.getWorldName());
     }
 }

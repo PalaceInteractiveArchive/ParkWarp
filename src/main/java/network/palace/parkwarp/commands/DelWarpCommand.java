@@ -1,5 +1,6 @@
 package network.palace.parkwarp.commands;
 
+import network.palace.core.Core;
 import network.palace.core.command.CommandException;
 import network.palace.core.command.CommandMeta;
 import network.palace.core.command.CommandPermission;
@@ -8,7 +9,6 @@ import network.palace.core.player.Rank;
 import network.palace.parkwarp.ParkWarp;
 import network.palace.parkwarp.handlers.Warp;
 import network.palace.parkwarp.utils.WarpUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -30,9 +30,8 @@ public class DelWarpCommand extends CoreCommand {
                 sender.sendMessage(ChatColor.RED + "Warp not found!");
                 return;
             }
-            Bukkit.getScheduler().runTaskAsynchronously(ParkWarp.getInstance(), () -> {
+            Core.runTaskAsynchronously(() -> {
                 wu.removeWarp(warp);
-                wu.removeWarpSql(warp);
                 wu.updateWarps();
                 sender.sendMessage(ChatColor.GRAY + "Warp " + w + " has been removed.");
             });

@@ -33,7 +33,7 @@ public class UpdateWarpCommand extends CoreCommand {
         if (args.length == 1) {
             WarpUtil wu = ParkWarp.getInstance().getWarpUtil();
             final String w = args[0];
-            if (!wu.warpExistsSql(w)) {
+            if (!wu.warpExists(w)) {
                 player.sendMessage(ChatColor.RED
                         + "A warp doesn't exist by that name! To add a warp, type /setwarp [Warp Name]");
                 return;
@@ -45,8 +45,6 @@ public class UpdateWarpCommand extends CoreCommand {
             Core.runTaskAsynchronously(() -> {
                 wu.removeWarp(warp);
                 wu.addWarp(newWarp);
-                wu.removeWarpSql(warp);
-                wu.addWarpSql(newWarp);
                 wu.updateWarps();
                 player.sendMessage(ChatColor.GRAY + "Warp " + w + " has been updated.");
             });
