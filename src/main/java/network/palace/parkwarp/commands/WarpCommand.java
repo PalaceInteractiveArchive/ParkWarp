@@ -202,8 +202,10 @@ public class WarpCommand extends CoreCommand {
      */
     public void listWarps(CPlayer player, int page, boolean serverOnly) {
         List<String> allWarps = new ArrayList<>();
+        boolean staff = player.getRank().getRankId() >= Rank.TRAINEE.getRankId();
         for (Warp w : ParkWarp.getInstance().getWarpUtil().getWarps()) {
             if (serverOnly && !w.getServer().equalsIgnoreCase(Core.getServerType())) continue;
+            if (!staff && w.getName().toLowerCase().startsWith("staff")) continue;
             allWarps.add(w.getName());
         }
         Collections.sort(allWarps);
