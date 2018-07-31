@@ -2,10 +2,12 @@ package network.palace.parkwarp.utils;
 
 import com.mongodb.client.FindIterable;
 import network.palace.core.Core;
+import network.palace.core.player.Rank;
 import network.palace.parkwarp.dashboard.packets.parks.PacketRefreshWarps;
 import network.palace.parkwarp.dashboard.packets.parks.PacketWarp;
 import network.palace.parkwarp.handlers.Warp;
 import org.bson.Document;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,7 @@ public class WarpUtil {
         warps.clear();
         FindIterable<Document> list = Core.getMongoHandler().getWarps();
         for (Document d : list) {
-            Warp w = new Warp(d.getString("name"),
+            Warp warp = new Warp(d.getString("name"),
                     d.getString("server"),
                     d.getDouble("x"),
                     d.getDouble("y"),
@@ -36,7 +38,15 @@ public class WarpUtil {
                     d.getInteger("yaw"),
                     d.getInteger("pitch"),
                     d.getString("world"));
-            warps.add(w);
+            if (d.containsKey("rank")) {
+                try {
+                    warp.setRank(Rank.fromString(d.getString("rank")));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Bukkit.getLogger().warning("Error loading warp " + d.getString("name"));
+                }
+            }
+            warps.add(warp);
         }
     }
 
@@ -74,6 +84,7 @@ public class WarpUtil {
 
     public void addWarp(Warp warp) {
         warps.add(warp);
-        Core.getMongoHandler().createWarp(warp.getName(), warp.getServer(), warp.getX(), warp.getY(), warp.getZ(), warp.getYaw(), warp.getPitch(), warp.getWorldName());
+        Core.getMongoHandler().createWarp(warp.getName(), warp.getServer(), warp.getX(), warp.getY(), warp.getZ(),
+                warp.getYaw(), warp.getPitch(), warp.getWorldName(), warp.getRank());
     }
 }

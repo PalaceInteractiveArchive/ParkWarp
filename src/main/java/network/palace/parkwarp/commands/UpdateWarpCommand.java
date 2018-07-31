@@ -3,7 +3,6 @@ package network.palace.parkwarp.commands;
 import network.palace.core.Core;
 import network.palace.core.command.CommandException;
 import network.palace.core.command.CommandMeta;
-import network.palace.core.command.CommandPermission;
 import network.palace.core.command.CoreCommand;
 import network.palace.core.player.Rank;
 import network.palace.parkwarp.ParkWarp;
@@ -14,8 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandMeta(description = "Update Warp")
-@CommandPermission(rank = Rank.MOD)
+@CommandMeta(description = "Update Warp", rank = Rank.MOD)
 public class UpdateWarpCommand extends CoreCommand {
 
     public UpdateWarpCommand() {
@@ -30,7 +28,7 @@ public class UpdateWarpCommand extends CoreCommand {
             return;
         }
         final Player player = (Player) sender;
-        if (args.length == 1) {
+        if (args.length > 0) {
             WarpUtil wu = ParkWarp.getInstance().getWarpUtil();
             final String w = args[0];
             if (!wu.warpExists(w)) {
@@ -42,6 +40,10 @@ public class UpdateWarpCommand extends CoreCommand {
             final Warp warp = wu.findWarp(w);
             final Warp newWarp = new Warp(w, Core.getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
                     loc.getPitch(), loc.getWorld().getName());
+            if (args.length > 1) {
+                Rank rank = Rank.fromString(args[1]);
+                newWarp.setRank(rank);
+            }
             Core.runTaskAsynchronously(() -> {
                 wu.removeWarp(warp);
                 wu.addWarp(newWarp);
@@ -50,6 +52,6 @@ public class UpdateWarpCommand extends CoreCommand {
             });
             return;
         }
-        player.sendMessage(ChatColor.RED + "/uwarp [Warp Name]");
+        player.sendMessage(ChatColor.RED + "/uwarp [Warp Name] <Rank>");
     }
 }

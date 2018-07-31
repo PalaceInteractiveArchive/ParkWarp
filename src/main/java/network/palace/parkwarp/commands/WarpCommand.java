@@ -86,37 +86,10 @@ public class WarpCommand extends CoreCommand {
                 return;
             }
             Rank rank = player.getRank();
-            if (warp.getName().toLowerCase().startsWith("dvc")) {
-                if (rank.getRankId() < Rank.DWELLER.getRankId()) {
-                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.DWELLER.getFormattedName()
-                            + ChatColor.RED + " rank or above to use this warp!");
-                    return;
-                }
-            }
-            if (warp.getName().toLowerCase().startsWith("share")) {
-                if (rank.getRankId() < Rank.DWELLER.getRankId()) {
-                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.DWELLER.getFormattedName()
-                            + ChatColor.RED + " rank or above to use this warp!");
-                    return;
-                }
-            }
-            if (warp.getName().toLowerCase().startsWith("honor")) {
-                if (rank.getRankId() < Rank.HONORABLE.getRankId()) {
-                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.HONORABLE.getFormattedName()
-                            + ChatColor.RED + " rank or above to use this warp!");
-                    return;
-                }
-            }
-            if (warp.getName().toLowerCase().startsWith("char")) {
-                if (rank.getRankId() < Rank.CHARACTER.getRankId()) {
-                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.CHARACTER.getFormattedName()
-                            + ChatColor.RED + " rank or above to use this warp!");
-                    return;
-                }
-            }
-            if (warp.getName().toLowerCase().startsWith("staff")) {
-                if (rank.getRankId() < Rank.TRAINEE.getRankId()) {
-                    player.sendMessage(ChatColor.RED + "You must be the " + Rank.TRAINEE.getFormattedName()
+            if (warp.getRank() != null) {
+                Rank required = warp.getRank();
+                if (rank.getRankId() < required.getRankId()) {
+                    player.sendMessage(ChatColor.RED + "You must be the " + required.getFormattedName()
                             + ChatColor.RED + " rank or above to use this warp!");
                     return;
                 }
@@ -202,11 +175,11 @@ public class WarpCommand extends CoreCommand {
      */
     public void listWarps(CPlayer player, int page, boolean serverOnly) {
         List<String> allWarps = new ArrayList<>();
-        boolean staff = player.getRank().getRankId() >= Rank.TRAINEE.getRankId();
+        Rank rank = player.getRank();
         for (Warp w : ParkWarp.getInstance().getWarpUtil().getWarps()) {
             if (serverOnly && !w.getServer().equalsIgnoreCase(Core.getServerType())) continue;
-            if (!staff && w.getName().toLowerCase().startsWith("staff")) continue;
-            allWarps.add(w.getName());
+            if (w.getRank() != null && rank.getRankId() < w.getRank().getRankId()) continue;
+            allWarps.add(w.getName().toLowerCase());
         }
         Collections.sort(allWarps);
         if (page < 1 || allWarps.size() < ((page - 1) * 20)) {

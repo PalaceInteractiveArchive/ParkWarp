@@ -3,7 +3,6 @@ package network.palace.parkwarp.commands;
 import network.palace.core.Core;
 import network.palace.core.command.CommandException;
 import network.palace.core.command.CommandMeta;
-import network.palace.core.command.CommandPermission;
 import network.palace.core.command.CoreCommand;
 import network.palace.core.player.Rank;
 import network.palace.parkwarp.ParkWarp;
@@ -12,8 +11,7 @@ import network.palace.parkwarp.utils.WarpUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-@CommandMeta(description = "Delete a warp")
-@CommandPermission(rank = Rank.MOD)
+@CommandMeta(description = "Delete a warp", rank = Rank.MOD)
 public class DelWarpCommand extends CoreCommand {
 
     public DelWarpCommand() {

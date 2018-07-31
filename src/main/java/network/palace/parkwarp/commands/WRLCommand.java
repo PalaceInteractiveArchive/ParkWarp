@@ -2,7 +2,6 @@ package network.palace.parkwarp.commands;
 
 import network.palace.core.command.CommandException;
 import network.palace.core.command.CommandMeta;
-import network.palace.core.command.CommandPermission;
 import network.palace.core.command.CoreCommand;
 import network.palace.core.player.Rank;
 import network.palace.parkwarp.ParkWarp;
@@ -12,8 +11,7 @@ import org.bukkit.command.CommandSender;
 /**
  * Created by Marc on 11/21/16
  */
-@CommandMeta(description = "Reload warps")
-@CommandPermission(rank = Rank.MOD)
+@CommandMeta(description = "Reload warps", rank = Rank.MOD)
 public class WRLCommand extends CoreCommand {
 
     public WRLCommand() {

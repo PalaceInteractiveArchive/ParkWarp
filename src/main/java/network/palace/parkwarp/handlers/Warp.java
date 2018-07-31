@@ -1,23 +1,25 @@
 package network.palace.parkwarp.handlers;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import network.palace.core.player.Rank;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Setter
 public class Warp {
-    @Getter private String name;
-    @Getter private String server;
-    @Getter private double x;
-    @Getter private double y;
-    @Getter private double z;
-    @Getter private float yaw;
-    @Getter private float pitch;
-    private String world;
+    @Getter private final String name;
+    @Getter private final String server;
+    @Getter private final double x;
+    @Getter private final double y;
+    @Getter private final double z;
+    @Getter private final float yaw;
+    @Getter private final float pitch;
+    @Getter private Rank rank = null;
+    private final String world;
 
     public World getWorld() {
         if (Bukkit.getWorlds().get(0).getName().equals(world)) {
