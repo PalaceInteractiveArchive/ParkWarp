@@ -22,16 +22,13 @@ public class PacketListener implements Listener {
             return;
         }
         int id = object.get("id").getAsInt();
-        switch (id) {
-            /**
-             * Refresh Warps
-             */
-            case 62: {
-                PacketRefreshWarps packet = new PacketRefreshWarps().fromJSON(object);
-                if (packet.getServer().equals(Core.getInstanceName())) return;
-                ParkWarp.getInstance().getWarpUtil().refreshWarps();
-                break;
-            }
+        /**
+         * Refresh Warps
+         */
+        if (id == 62) {
+            PacketRefreshWarps packet = new PacketRefreshWarps().fromJSON(object);
+            if (packet.getServer().equals(Core.getInstanceName())) return;
+            ParkWarp.getWarpUtil().refreshWarps();
         }
     }
 }

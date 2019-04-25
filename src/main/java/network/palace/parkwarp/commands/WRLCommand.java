@@ -21,7 +21,7 @@ public class WRLCommand extends CoreCommand {
     @Override
     protected void handleCommandUnspecific(CommandSender sender, String[] args) throws CommandException {
         sender.sendMessage(ChatColor.BLUE + "Reloading Warps...");
-        ParkWarp.getInstance().getWarpUtil().refreshWarps();
+        ParkWarp.getWarpUtil().refreshWarps();
         sender.sendMessage(ChatColor.BLUE + "Warps Reloaded!");
     }
 }
