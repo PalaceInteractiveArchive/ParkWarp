@@ -21,6 +21,7 @@ public class ParkWarp extends Plugin {
         warpUtil.refreshWarps();
         getLogger().info("Warps loaded!");
         registerCommand(new DelWarpCommand());
+        registerCommand(new NearbyCommand());
         registerCommand(new SetWarpCommand());
         registerCommand(new UpdateWarpCommand());
         registerCommand(new WarpCommand());
