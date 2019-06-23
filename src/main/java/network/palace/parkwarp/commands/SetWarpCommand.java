@@ -39,7 +39,7 @@ public class SetWarpCommand extends CoreCommand {
             Rank rank = Rank.fromString(args[1]);
             warp.setRank(rank);
         }
-        Core.runTaskAsynchronously(() -> {
+        Core.runTaskAsynchronously(ParkWarp.getInstance(), () -> {
             wu.addWarp(warp);
             wu.updateWarps();
             player.sendMessage(ChatColor.GRAY + "Warp " + w + " set. Rank minimum: " + (warp.getRank() == null ? Rank.SETTLER.getFormattedName() : warp.getRank().getFormattedName()));

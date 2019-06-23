@@ -40,7 +40,7 @@ public class UpdateWarpCommand extends CoreCommand {
             Rank rank = Rank.fromString(args[1]);
             newWarp.setRank(rank);
         }
-        Core.runTaskAsynchronously(() -> {
+        Core.runTaskAsynchronously(ParkWarp.getInstance(), () -> {
             wu.removeWarp(warp);
             wu.addWarp(newWarp);
             wu.updateWarps();

@@ -31,7 +31,7 @@ public class DelWarpCommand extends CoreCommand {
             sender.sendMessage(ChatColor.RED + "Warp not found!");
             return;
         }
-        Core.runTaskAsynchronously(() -> {
+        Core.runTaskAsynchronously(ParkWarp.getInstance(), () -> {
             wu.removeWarp(warp);
             wu.updateWarps();
             sender.sendMessage(ChatColor.GRAY + "Warp " + w + " has been removed.");
