@@ -20,21 +20,21 @@ public class DelWarpCommand extends CoreCommand {
 
     @Override
     protected void handleCommandUnspecific(CommandSender sender, String[] args) throws CommandException {
-        if (args.length == 1) {
-            WarpUtil wu = ParkWarp.getInstance().getWarpUtil();
-            final String w = args[0];
-            final Warp warp = wu.findWarp(w);
-            if (warp == null) {
-                sender.sendMessage(ChatColor.RED + "Warp not found!");
-                return;
-            }
-            Core.runTaskAsynchronously(() -> {
-                wu.removeWarp(warp);
-                wu.updateWarps();
-                sender.sendMessage(ChatColor.GRAY + "Warp " + w + " has been removed.");
-            });
+        if (args.length == 0) {
+            sender.sendMessage(ChatColor.RED + "/delwarp [Warp Name]");
             return;
         }
-        sender.sendMessage(ChatColor.RED + "/delwarp [Warp Name]");
+        WarpUtil wu = ParkWarp.getWarpUtil();
+        final String w = args[0];
+        final Warp warp = wu.findWarp(w);
+        if (warp == null) {
+            sender.sendMessage(ChatColor.RED + "Warp not found!");
+            return;
+        }
+        Core.runTaskAsynchronously(ParkWarp.getInstance(), () -> {
+            wu.removeWarp(warp);
+            wu.updateWarps();
+            sender.sendMessage(ChatColor.GRAY + "Warp " + w + " has been removed.");
+        });
     }
 }

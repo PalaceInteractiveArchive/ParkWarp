@@ -46,9 +46,7 @@ public class Warp {
     }
 
     public String toDatabaseString() {
-        return name + ":" + server + ":" + Double.toString(x) + ":" + Double.toString(y) + ":" +
-                Double.toString(z) + ":" + Float.toString(yaw) + ":" + Float.toString(pitch) + ":" +
-                world;
+        return name + ":" + server + ":" + x + ":" + y + ":" + z + ":" + yaw + ":" + pitch + ":" + world;
     }
 
     @Override
