@@ -15,7 +15,7 @@ public class Warp extends Location {
     private final String world;
 
     public Warp(String name, String server, double x, double y, double z, float yaw, float pitch, String world) {
-        super(Bukkit.getWorld(world), x, y, z);
+        super(Bukkit.getWorld(world), x, y, z, yaw, pitch);
         this.name = name;
         this.server = server;
         this.world = world;
