@@ -29,14 +29,13 @@ public class WarpInfoCommand extends CoreCommand {
             return;
         }
         Rank rank = warp.getRank() == null ? Rank.SETTLER : warp.getRank();
-        Location loc = warp.getLocation();
         sender.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Warp Info:");
         sender.sendMessage(ChatColor.AQUA + "Name: " + rank.getTagColor() + warp.getName());
-        sender.sendMessage(ChatColor.AQUA + "X: " + ChatColor.GREEN + loc.getX());
-        sender.sendMessage(ChatColor.AQUA + "Y: " + ChatColor.GREEN + loc.getY());
-        sender.sendMessage(ChatColor.AQUA + "Z: " + ChatColor.GREEN + loc.getZ());
-        sender.sendMessage(ChatColor.AQUA + "Yaw: " + ChatColor.GREEN + loc.getYaw());
-        sender.sendMessage(ChatColor.AQUA + "Pitch: " + ChatColor.GREEN + loc.getPitch());
+        sender.sendMessage(ChatColor.AQUA + "X: " + ChatColor.GREEN + warp.getX());
+        sender.sendMessage(ChatColor.AQUA + "Y: " + ChatColor.GREEN + warp.getY());
+        sender.sendMessage(ChatColor.AQUA + "Z: " + ChatColor.GREEN + warp.getZ());
+        sender.sendMessage(ChatColor.AQUA + "Yaw: " + ChatColor.GREEN + warp.getYaw());
+        sender.sendMessage(ChatColor.AQUA + "Pitch: " + ChatColor.GREEN + warp.getPitch());
         sender.sendMessage(ChatColor.AQUA + "World: " + ChatColor.GREEN + warp.getWorldName());
         sender.sendMessage(ChatColor.AQUA + "Server: " + ChatColor.GREEN + warp.getServer());
         sender.sendMessage(ChatColor.AQUA + "Rank: " + ChatColor.GREEN + rank.getFormattedName());

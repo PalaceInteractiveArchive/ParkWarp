@@ -12,7 +12,6 @@ import network.palace.parkwarp.ParkWarp;
 import network.palace.parkwarp.handlers.Warp;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -37,8 +36,8 @@ public class WarpCommand extends CoreCommand {
                     sender.sendMessage(ChatColor.RED + "Player not found.");
                     return;
                 }
-                final CPlayer tp = Core.getPlayerManager().getPlayer(args[1]);
-                final String w = args[0];
+                CPlayer tp = Core.getPlayerManager().getPlayer(args[1]);
+                String w = args[0];
                 Warp warp = ParkWarp.getWarpUtil().findWarp(w);
                 if (warp == null) {
                     sender.sendMessage(ChatColor.RED + "Warp not found!");
@@ -46,24 +45,24 @@ public class WarpCommand extends CoreCommand {
                 }
                 ChatColor warpColor = warp.getRank() == null ? ChatColor.DARK_AQUA : warp.getRank().getTagColor();
                 String targetServer = warp.getServer();
-                String currentServer = Core.getServerType();
-                final Location loc = warp.getLocation();
-                if (targetServer.equals(currentServer)) {
+                if (targetServer.equals(Core.getServerType())) {
+                    //Being warped by console to local warp
                     if (tp.isInsideVehicle()) {
+                        //Is on ride
                         tp.eject();
-                        sender.sendMessage(ChatColor.BLUE + tp.getName() + " has arrived at " + ChatColor.WHITE +
-                                "[" + warpColor + w + ChatColor.WHITE + "]");
-                        Bukkit.getScheduler().runTaskLater(ParkWarp.getInstance(), () -> tp.teleport(warp.getLocation(),
+                        Bukkit.getScheduler().runTaskLater(ParkWarp.getInstance(), () -> tp.teleport(warp,
                                 PlayerTeleportEvent.TeleportCause.COMMAND), 10L);
-                        return;
+                    } else {
+                        //Isn't on ride
+                        tp.teleport(warp, PlayerTeleportEvent.TeleportCause.COMMAND);
                     }
-                    tp.teleport(warp.getLocation(), PlayerTeleportEvent.TeleportCause.COMMAND);
                     tp.sendMessage(ChatColor.BLUE + "You have arrived at " + ChatColor.WHITE + "[" +
                             warpColor + w + ChatColor.WHITE + "]");
                     sender.sendMessage(ChatColor.BLUE + tp.getName() + " has arrived at " + ChatColor.WHITE + "[" +
                             warpColor + w + ChatColor.WHITE + "]");
                     return;
                 } else {
+                    //Being warped by console to remote warp
                     ParkWarp.getWarpUtil().crossServerWarp(tp.getUniqueId(), w, targetServer);
                     return;
                 }
@@ -74,10 +73,12 @@ public class WarpCommand extends CoreCommand {
         CPlayer player = Core.getPlayerManager().getPlayer(((Player) sender).getUniqueId());
         if (args.length == 1) {
             if (MiscUtil.checkIfInt(args[0])) {
+                //Listing warp pages
                 listWarps(player, Integer.parseInt(args[0]), false);
                 return;
             }
             if (args[0].equalsIgnoreCase("-s")) {
+                //Listing local warps
                 listWarps(player, 1, true);
                 return;
             }
@@ -88,29 +89,35 @@ public class WarpCommand extends CoreCommand {
                 return;
             }
             ChatColor warpColor = warp.getRank() == null ? ChatColor.DARK_AQUA : warp.getRank().getTagColor();
-            Rank rank = player.getRank();
             if (warp.getRank() != null) {
                 Rank required = warp.getRank();
-                if (rank.getRankId() < required.getRankId()) {
+                if (player.getRank().getRankId() < required.getRankId()) {
                     player.sendMessage(ChatColor.RED + "You must be the " + required.getFormattedName()
-                            + ChatColor.RED + " rank or above to use this warp!");
+                            + ChatColor.RED + " rank or above to visit this warp!");
                     return;
                 }
             }
             String targetServer = warp.getServer();
-            String currentServer = Core.getServerType();
-            final Location loc = warp.getLocation();
-            if (targetServer.equals(currentServer)) {
+            if (targetServer.equals(Core.getServerType())) {
+                //Warping self to local warp
+                if (ParkWarp.getWarpUtil().isToggledWarps() && player.getRank().getRankId() < Rank.SPECIALGUEST.getRankId()) {
+                    //Warping is disabled for players below Special Guest, block this warp
+                    player.sendMessage(ChatColor.RED + "Warping is disabled here.");
+                    return;
+                }
                 if (player.isInsideVehicle()) {
+                    //Is on ride
                     player.sendMessage(ChatColor.RED + "You can't teleport while on a ride!");
                     return;
                 }
-                player.teleport(warp.getLocation(), PlayerTeleportEvent.TeleportCause.COMMAND);
+                //Isn't on ride
+                player.teleport(warp, PlayerTeleportEvent.TeleportCause.COMMAND);
                 player.sendMessage(ChatColor.BLUE + "You have arrived at "
                         + ChatColor.WHITE + "[" + warpColor + w
                         + ChatColor.WHITE + "]");
                 return;
             } else {
+                //Warping self to remote warp
                 ParkWarp.getWarpUtil().crossServerWarp(player.getUniqueId(), warp.getName(), targetServer);
                 return;
             }
@@ -124,8 +131,7 @@ public class WarpCommand extends CoreCommand {
                 listWarps(player, 1, true);
                 return;
             }
-            Rank rank = player.getRank();
-            if (rank.getRankId() < Rank.TRAINEE.getRankId()) {
+            if (player.getRank().getRankId() < Rank.TRAINEE.getRankId()) {
                 player.performCommand("warp " + args[0]);
                 return;
             }
@@ -145,7 +151,6 @@ public class WarpCommand extends CoreCommand {
             ChatColor warpColor = warp.getRank() == null ? ChatColor.DARK_AQUA : warp.getRank().getTagColor();
             final String targetServer = warp.getServer();
             String currentServer = Core.getServerType();
-            final Location loc = warp.getLocation();
             if (targetServer.equals(currentServer)) {
                 player.sendMessage(ChatColor.BLUE + tp.getName()
                         + " has arrived at " + ChatColor.WHITE + "["
@@ -154,7 +159,7 @@ public class WarpCommand extends CoreCommand {
                     tp.sendMessage(ChatColor.RED + "You can't teleport while on a ride!");
                     return;
                 }
-                tp.teleport(warp.getLocation(), PlayerTeleportEvent.TeleportCause.COMMAND);
+                tp.teleport(warp, PlayerTeleportEvent.TeleportCause.COMMAND);
                 tp.sendMessage(ChatColor.BLUE + "You have arrived at "
                         + ChatColor.WHITE + "[" + warpColor + w
                         + ChatColor.WHITE + "]");
@@ -197,7 +202,7 @@ public class WarpCommand extends CoreCommand {
         FormattedMessage msg = new FormattedMessage((serverOnly ? "Server " : "") + "Warps (Page " + page + "):\n")
                 .color(ChatColor.GOLD);
 
-        warps = warps.subList(20 * (page - 1), warps.size() < max ? warps.size() : max);
+        warps = warps.subList(20 * (page - 1), Math.min(warps.size(), max));
 
         for (int i = 0; i < warps.size(); i++) {
             Warp warp = warps.get(i);

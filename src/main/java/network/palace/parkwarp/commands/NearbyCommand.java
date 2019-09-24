@@ -27,11 +27,10 @@ public class NearbyCommand extends CoreCommand {
         HashMap<Warp, Integer> nearby = new HashMap<>();
         ParkWarp.getWarpUtil().getWarps().forEach(warp -> {
             if (!warp.getServer().equals(Core.getServerType()) ||
-                    warp.getLocation() == null ||
                     (warp.getRank() != null && player.getRank().getRankId() < warp.getRank().getRankId()))
                 return;
 
-            int distance = (int) warp.getLocation().distance(center);
+            int distance = (int) warp.distance(center);
             if (distance <= DEFAULT_SEARCH_DISTANCE) nearby.put(warp, distance);
         });
         if (nearby.isEmpty()) {

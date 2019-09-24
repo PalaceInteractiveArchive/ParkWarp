@@ -1,6 +1,7 @@
 package network.palace.parkwarp.utils;
 
 import com.mongodb.client.FindIterable;
+import lombok.Getter;
 import network.palace.core.Core;
 import network.palace.core.player.Rank;
 import network.palace.parkwarp.dashboard.packets.parks.PacketRefreshWarps;
@@ -9,11 +10,15 @@ import network.palace.parkwarp.handlers.Warp;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class WarpUtil {
+    //False if all players can warp, true if below SG can't
+    @Getter private boolean toggledWarps = false;
 
     private List<Warp> warps = new ArrayList<>();
 
@@ -22,8 +27,7 @@ public class WarpUtil {
     }
 
     public void crossServerWarp(final UUID uuid, final String warp, final String server) {
-        PacketWarp packet = new PacketWarp(uuid, warp, server);
-        Core.getDashboardConnection().send(packet.getJSON().toString());
+        Core.getDashboardConnection().send(new PacketWarp(uuid, warp, server));
     }
 
     public void refreshWarps() {
@@ -48,6 +52,8 @@ public class WarpUtil {
             }
             warps.add(warp);
         }
+
+        this.toggledWarps = new File("plugins/.disabledWarps").exists();
     }
 
     public boolean warpExists(String name) {
@@ -86,5 +92,20 @@ public class WarpUtil {
         warps.add(warp);
         Core.getMongoHandler().createWarp(warp.getName(), warp.getServer(), warp.getX(), warp.getY(), warp.getZ(),
                 warp.getYaw(), warp.getPitch(), warp.getWorldName(), warp.getRank());
+    }
+
+    public boolean toggleWarps() {
+        toggledWarps = !toggledWarps;
+        File disabledFile = new File("plugins/.disabledWarps");
+        if (toggledWarps) {
+            try {
+                disabledFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            disabledFile.delete();
+        }
+        return toggledWarps;
     }
 }
