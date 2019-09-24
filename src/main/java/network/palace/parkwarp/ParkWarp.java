@@ -20,9 +20,11 @@ public class ParkWarp extends Plugin {
         Bukkit.getPluginManager().registerEvents(new PacketListener(), this);
         warpUtil.refreshWarps();
         getLogger().info("Warps loaded!");
+
         registerCommand(new DelWarpCommand());
         registerCommand(new NearbyCommand());
         registerCommand(new SetWarpCommand());
+        registerCommand(new ToggleWarpsCommand());
         registerCommand(new UpdateWarpCommand());
         registerCommand(new WarpCommand());
         registerCommand(new WarpInfoCommand());
