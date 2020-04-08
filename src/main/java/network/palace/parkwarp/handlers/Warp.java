@@ -17,15 +17,30 @@ public class Warp extends Location {
     public Warp(String name, String server, double x, double y, double z, float yaw, float pitch, String world) {
         super(Bukkit.getWorld(world), x, y, z, yaw, pitch);
         this.name = name;
-        this.server = server;
+        switch (server.toLowerCase()) {
+            case "ttc":
+            case "mk":
+            case "epcot":
+            case "dhs":
+            case "ak":
+            case "typhoon":
+            case "resorts":
+            case "dcl":
+            case "seasonal":
+                this.server = "WDW";
+                break;
+            default:
+                this.server = server;
+        }
         this.world = world;
     }
 
     public World getWorld() {
-        if (Bukkit.getWorlds().get(0).getName().equals(world)) {
+        try {
             return Bukkit.getWorld(world);
+        } catch (Exception e) {
+            return null;
         }
-        return null;
     }
 
     public String getWorldName() {
