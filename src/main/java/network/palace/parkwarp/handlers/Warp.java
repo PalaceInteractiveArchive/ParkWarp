@@ -2,6 +2,7 @@ package network.palace.parkwarp.handlers;
 
 import lombok.Getter;
 import lombok.Setter;
+import network.palace.core.Core;
 import network.palace.core.player.Rank;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,11 +27,19 @@ public class Warp extends Location {
             case "typhoon":
             case "resorts":
             case "dcl":
-            case "seasonal":
-                this.server = "WDW";
+            case "wdw":
+                if (Core.getInstanceName().equals("Build1")) {
+                    this.server = "Build1";
+                } else {
+                    this.server = "WDW";
+                }
                 break;
             default:
-                this.server = server;
+                if (server.equalsIgnoreCase("uso") && Core.getInstanceName().equals("Build2")) {
+                    this.server = "Build2";
+                } else {
+                    this.server = server;
+                }
         }
         this.world = world;
     }

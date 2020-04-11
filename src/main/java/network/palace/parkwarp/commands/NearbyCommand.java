@@ -27,6 +27,7 @@ public class NearbyCommand extends CoreCommand {
         HashMap<Warp, Integer> nearby = new HashMap<>();
         ParkWarp.getWarpUtil().getWarps().forEach(warp -> {
             if (!warp.getServer().equals(Core.getServerType()) ||
+                    (warp.getWorld() == null || !warp.getWorld().equals(player.getWorld())) ||
                     (warp.getRank() != null && player.getRank().getRankId() < warp.getRank().getRankId()))
                 return;
 
