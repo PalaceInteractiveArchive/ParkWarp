@@ -52,6 +52,16 @@ public class Warp extends Location {
         }
     }
 
+    public String getServerDatabase() {
+        switch (server) {
+            case "Build1":
+                return "WDW";
+            case "Build2":
+                return "USO";
+        }
+        return server;
+    }
+
     public String getWorldName() {
         return world;
     }

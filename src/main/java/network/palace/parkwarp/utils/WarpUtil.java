@@ -90,7 +90,7 @@ public class WarpUtil {
 
     public void addWarp(Warp warp) {
         warps.add(warp);
-        Core.getMongoHandler().createWarp(warp.getName(), warp.getServer(), warp.getX(), warp.getY(), warp.getZ(),
+        Core.getMongoHandler().createWarp(warp.getName(), warp.getServerDatabase(), warp.getX(), warp.getY(), warp.getZ(),
                 warp.getYaw(), warp.getPitch(), warp.getWorldName(), warp.getRank());
     }
 
