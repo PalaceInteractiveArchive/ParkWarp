@@ -22,10 +22,6 @@ public class WarpUtil {
 
     private List<Warp> warps = new ArrayList<>();
 
-    public WarpUtil() {
-        refreshWarps();
-    }
-
     public void crossServerWarp(final UUID uuid, final String warp, final String server) {
         Core.getDashboardConnection().send(new PacketWarp(uuid, warp, server));
     }

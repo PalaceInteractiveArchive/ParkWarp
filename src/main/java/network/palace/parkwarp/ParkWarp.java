@@ -29,6 +29,8 @@ public class ParkWarp extends Plugin {
         registerCommand(new WarpCommand());
         registerCommand(new WarpInfoCommand());
         registerCommand(new WRLCommand());
+
+        registerCommand(new TranslateWarp());
     }
 
     @Override
