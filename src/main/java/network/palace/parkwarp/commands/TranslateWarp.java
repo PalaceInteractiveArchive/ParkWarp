@@ -22,30 +22,38 @@ public class TranslateWarp extends CoreCommand {
     @Override
     protected void handleCommand(CPlayer player, String[] args) throws CommandException {
         if (args.length != 5) {
-            player.sendMessage(ChatColor.RED + "/translatewarp [target world] [rel x] [rel y] [rel z] [warp]");
+            player.sendMessage(ChatColor.RED + "/translatewarp [from world] [to world] [rel x] [rel y] [rel z]");
             return;
         }
-        World world = Bukkit.getWorld(args[0]);
-        if (world == null) {
+        World fromWorld = Bukkit.getWorld(args[0]), toWorld = Bukkit.getWorld(args[1]);
+        if (fromWorld == null) {
             player.sendMessage(ChatColor.RED + "Unknown world '" + args[0] + "'!");
             return;
         }
-        if (!(MiscUtil.checkIfDouble(args[1]) &&
-                MiscUtil.checkIfDouble(args[2]) &&
-                MiscUtil.checkIfDouble(args[3]))) {
+        if (toWorld == null) {
+            player.sendMessage(ChatColor.RED + "Unknown world '" + args[1] + "'!");
+            return;
+        }
+        if (!(MiscUtil.checkIfDouble(args[2]) &&
+                MiscUtil.checkIfDouble(args[3]) &&
+                MiscUtil.checkIfDouble(args[4]))) {
             player.sendMessage(ChatColor.RED + "The coordinates must be numbers!");
             return;
         }
-        Warp warp = ParkWarp.getWarpUtil().findWarp(args[4]);
-        if (warp == null) {
-            player.sendMessage(ChatColor.RED + "Unknown warp '" + args[4] + "'!");
-            return;
+        double dx = Double.parseDouble(args[2]);
+        double dy = Double.parseDouble(args[3]);
+        double dz = Double.parseDouble(args[4]);
+        for (Warp warp : ParkWarp.getWarpUtil().getWarps()) {
+//            Warp warp = ParkWarp.getWarpUtil().findWarp(args[4]);
+            if (warp == null || !warp.getWorldName().equalsIgnoreCase(fromWorld.getName())) continue;
+            warp.setWorldLocal(toWorld);
+            warp.setX(warp.getX() + dx);
+            warp.setY(warp.getY() + dy);
+            warp.setZ(warp.getZ() + dz);
+            ParkWarp.getWarpUtil().removeWarp(warp);
+            ParkWarp.getWarpUtil().addWarp(warp);
+            player.sendMessage(ChatColor.GREEN + "Updated " + warp.getName());
         }
-        warp.setWorld(world);
-        warp.setX(warp.getX() + Double.parseDouble(args[1]));
-        warp.setY(warp.getY() + Double.parseDouble(args[2]));
-        warp.setZ(warp.getZ() + Double.parseDouble(args[3]));
-        ParkWarp.getWarpUtil().removeWarp(warp);
-        ParkWarp.getWarpUtil().addWarp(warp);
+        player.sendMessage(ChatColor.YELLOW + "Done!");
     }
 }

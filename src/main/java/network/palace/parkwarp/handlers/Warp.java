@@ -13,7 +13,8 @@ public class Warp extends Location {
     @Getter private final String name;
     @Getter private final String server;
     @Getter private Rank rank = null;
-    private final String world;
+    //    private final String world;
+    private String world;
 
     public Warp(String name, String server, double x, double y, double z, float yaw, float pitch, String world) {
         super(Bukkit.getWorld(world), x, y, z, yaw, pitch);
@@ -42,6 +43,11 @@ public class Warp extends Location {
                 }
         }
         this.world = world;
+    }
+
+    public void setWorldLocal(World world) {
+        this.world = world.getName();
+        setWorld(world);
     }
 
     public World getWorld() {
