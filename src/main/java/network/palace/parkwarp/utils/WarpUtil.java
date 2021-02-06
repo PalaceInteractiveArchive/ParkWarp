@@ -3,9 +3,10 @@ package network.palace.parkwarp.utils;
 import com.mongodb.client.FindIterable;
 import lombok.Getter;
 import network.palace.core.Core;
+import network.palace.core.messagequeue.packets.SendPlayerPacket;
+import network.palace.core.player.CPlayer;
 import network.palace.core.player.Rank;
 import network.palace.parkwarp.dashboard.packets.parks.PacketRefreshWarps;
-import network.palace.parkwarp.dashboard.packets.parks.PacketWarp;
 import network.palace.parkwarp.handlers.Warp;
 import org.bson.Document;
 import org.bukkit.Bukkit;
@@ -14,20 +15,23 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class WarpUtil {
     //False if all players can warp, true if below SG can't
     @Getter private boolean toggledWarps = false;
 
-    private List<Warp> warps = new ArrayList<>();
+    private final List<Warp> warps = new ArrayList<>();
 
     public WarpUtil() {
         refreshWarps();
     }
 
-    public void crossServerWarp(final UUID uuid, final String warp, final String server) {
-        Core.getDashboardConnection().send(new PacketWarp(uuid, warp, server));
+    public void crossServerWarp(CPlayer player, final String warp, final String server) throws Exception {
+        Core.getMongoHandler().setOnlineDataValue(player.getUniqueId(), "crossServerWarp", warp);
+        Core.getMongoHandler().setOnlineDataValue(player.getUniqueId(), "crossServerWarpExpires", System.currentTimeMillis() + (5 * 1000));
+        Core.getMessageHandler().sendMessage(new SendPlayerPacket(player.getUniqueId().toString(), server),
+                "proxy_direct", "direct", String.valueOf(player.getRegistry().getEntry("proxy")));
+//        Core.getDashboardConnection().send(new PacketWarp(uuid, warp, server));
     }
 
     public void refreshWarps() {

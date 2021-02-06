@@ -5,8 +5,8 @@ import network.palace.core.plugin.Plugin;
 import network.palace.core.plugin.PluginInfo;
 import network.palace.parkwarp.commands.*;
 import network.palace.parkwarp.dashboard.PacketListener;
+import network.palace.parkwarp.listeners.PlayerJoin;
 import network.palace.parkwarp.utils.WarpUtil;
-import org.bukkit.Bukkit;
 
 @PluginInfo(name = "ParkWarp", version = "1.2.9", depend = "Core", canReload = true)
 public class ParkWarp extends Plugin {
@@ -17,7 +17,8 @@ public class ParkWarp extends Plugin {
     protected void onPluginEnable() throws Exception {
         instance = this;
         warpUtil = new WarpUtil();
-        Bukkit.getPluginManager().registerEvents(new PacketListener(), this);
+        registerListener(new PacketListener());
+        registerListener(new PlayerJoin());
         warpUtil.refreshWarps();
         getLogger().info("Warps loaded!");
 

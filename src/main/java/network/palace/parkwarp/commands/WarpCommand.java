@@ -75,7 +75,12 @@ public class WarpCommand extends CoreCommand {
                 return;
             } else {
                 //Warping self to remote warp
-                ParkWarp.getWarpUtil().crossServerWarp(player.getUniqueId(), warp.getName(), targetServer);
+                try {
+                    ParkWarp.getWarpUtil().crossServerWarp(player, warp.getName(), targetServer);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    player.sendMessage(ChatColor.RED + "We encountered an error while warping you, try again in a few minutes!");
+                }
                 return;
             }
         }
@@ -142,7 +147,12 @@ public class WarpCommand extends CoreCommand {
             }
         } else {
             //Being warped to remote warp
-            ParkWarp.getWarpUtil().crossServerWarp(tp.getUniqueId(), warpString, targetServer);
+            try {
+                ParkWarp.getWarpUtil().crossServerWarp(tp, warpString, targetServer);
+            } catch (Exception e) {
+                e.printStackTrace();
+                sender.sendMessage(ChatColor.RED + "We encountered an error while warping that player across servers, try again in a few minutes!");
+            }
         }
     }
 
