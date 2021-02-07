@@ -4,7 +4,7 @@ import lombok.Getter;
 import network.palace.core.plugin.Plugin;
 import network.palace.core.plugin.PluginInfo;
 import network.palace.parkwarp.commands.*;
-import network.palace.parkwarp.dashboard.PacketListener;
+import network.palace.parkwarp.listeners.PacketListener;
 import network.palace.parkwarp.listeners.PlayerJoin;
 import network.palace.parkwarp.utils.WarpUtil;
 

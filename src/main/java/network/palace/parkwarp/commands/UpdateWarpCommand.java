@@ -12,6 +12,8 @@ import network.palace.parkwarp.utils.WarpUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
+import java.io.IOException;
+
 @CommandMeta(description = "Update Warp", rank = Rank.MOD)
 public class UpdateWarpCommand extends CoreCommand {
 
@@ -41,10 +43,15 @@ public class UpdateWarpCommand extends CoreCommand {
             newWarp.setRank(rank);
         }
         Core.runTaskAsynchronously(ParkWarp.getInstance(), () -> {
-            wu.removeWarp(warp);
-            wu.addWarp(newWarp);
-            wu.updateWarps();
-            player.sendMessage(ChatColor.GRAY + "Warp " + w + " has been updated. Rank minimum: " + (newWarp.getRank() == null ? Rank.SETTLER.getFormattedName() : newWarp.getRank().getFormattedName()));
+            try {
+                wu.removeWarp(warp);
+                wu.addWarp(newWarp);
+                wu.updateWarps();
+                player.sendMessage(ChatColor.GRAY + "Warp " + w + " has been updated. Rank minimum: " + (newWarp.getRank() == null ? Rank.SETTLER.getFormattedName() : newWarp.getRank().getFormattedName()));
+            } catch (IOException e) {
+                e.printStackTrace();
+                player.sendMessage(ChatColor.RED + "An error occurred while updating that warp, check console for details.");
+            }
         });
     }
 }

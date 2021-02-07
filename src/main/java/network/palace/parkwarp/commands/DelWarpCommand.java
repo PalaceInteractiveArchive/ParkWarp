@@ -11,6 +11,8 @@ import network.palace.parkwarp.utils.WarpUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import java.io.IOException;
+
 @CommandMeta(description = "Delete a warp", rank = Rank.MOD)
 public class DelWarpCommand extends CoreCommand {
 
@@ -32,9 +34,14 @@ public class DelWarpCommand extends CoreCommand {
             return;
         }
         Core.runTaskAsynchronously(ParkWarp.getInstance(), () -> {
-            wu.removeWarp(warp);
-            wu.updateWarps();
-            sender.sendMessage(ChatColor.GRAY + "Warp " + w + " has been removed.");
+            try {
+                wu.removeWarp(warp);
+                wu.updateWarps();
+                sender.sendMessage(ChatColor.GRAY + "Warp " + w + " has been removed.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                sender.sendMessage(ChatColor.RED + "An error occurred while removing that warp, check console for details.");
+            }
         });
     }
 }

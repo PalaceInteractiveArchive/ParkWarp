@@ -6,8 +6,8 @@ import network.palace.core.Core;
 import network.palace.core.messagequeue.packets.SendPlayerPacket;
 import network.palace.core.player.CPlayer;
 import network.palace.core.player.Rank;
-import network.palace.parkwarp.dashboard.packets.parks.PacketRefreshWarps;
 import network.palace.parkwarp.handlers.Warp;
+import network.palace.parkwarp.packets.RefreshWarpsPacket;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 
@@ -31,7 +31,6 @@ public class WarpUtil {
         Core.getMongoHandler().setOnlineDataValue(player.getUniqueId(), "crossServerWarpExpires", System.currentTimeMillis() + (5 * 1000));
         Core.getMessageHandler().sendMessage(new SendPlayerPacket(player.getUniqueId().toString(), server),
                 "proxy_direct", "direct", String.valueOf(player.getRegistry().getEntry("proxy")));
-//        Core.getDashboardConnection().send(new PacketWarp(uuid, warp, server));
     }
 
     public void refreshWarps() {
@@ -73,9 +72,8 @@ public class WarpUtil {
         return null;
     }
 
-    public void updateWarps() {
-        PacketRefreshWarps packet = new PacketRefreshWarps(Core.getInstanceName());
-        Core.getDashboardConnection().send(packet);
+    public void updateWarps() throws IOException {
+        Core.getMessageHandler().sendMessage(new RefreshWarpsPacket(), Core.getMessageHandler().ALL_MC);
     }
 
     public List<Warp> getWarps() {

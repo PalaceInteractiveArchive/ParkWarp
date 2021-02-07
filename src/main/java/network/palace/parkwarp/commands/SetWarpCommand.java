@@ -12,6 +12,8 @@ import network.palace.parkwarp.utils.WarpUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
+import java.io.IOException;
+
 @CommandMeta(description = "Set a new warp", rank = Rank.MOD)
 public class SetWarpCommand extends CoreCommand {
 
@@ -33,16 +35,21 @@ public class SetWarpCommand extends CoreCommand {
                     + "A warp already exists by that name! To change the location of that warp, type /uwarp [Warp Name] <Rank>");
             return;
         }
-        final Warp warp = new Warp(w, Core.getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
+        Warp warp = new Warp(w, Core.getServerType(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
                 loc.getPitch(), loc.getWorld().getName());
         if (args.length > 1) {
             Rank rank = Rank.fromString(args[1]);
             warp.setRank(rank);
         }
         Core.runTaskAsynchronously(ParkWarp.getInstance(), () -> {
-            wu.addWarp(warp);
-            wu.updateWarps();
-            player.sendMessage(ChatColor.GRAY + "Warp " + w + " set. Rank minimum: " + (warp.getRank() == null ? Rank.SETTLER.getFormattedName() : warp.getRank().getFormattedName()));
+            try {
+                wu.addWarp(warp);
+                wu.updateWarps();
+                player.sendMessage(ChatColor.GRAY + "Warp " + w + " set. Rank minimum: " + (warp.getRank() == null ? Rank.SETTLER.getFormattedName() : warp.getRank().getFormattedName()));
+            } catch (IOException e) {
+                e.printStackTrace();
+                player.sendMessage(ChatColor.RED + "An error occurred while setting that warp, check console for details.");
+            }
         });
     }
 }
