@@ -8,7 +8,7 @@ import network.palace.parkwarp.listeners.PacketListener;
 import network.palace.parkwarp.listeners.PlayerJoin;
 import network.palace.parkwarp.utils.WarpUtil;
 
-@PluginInfo(name = "ParkWarp", version = "1.2.9", depend = "Core", canReload = true)
+@PluginInfo(name = "ParkWarp", version = "1.3.0", depend = "Core", canReload = true)
 public class ParkWarp extends Plugin {
     @Getter private static ParkWarp instance;
     @Getter private static WarpUtil warpUtil;
