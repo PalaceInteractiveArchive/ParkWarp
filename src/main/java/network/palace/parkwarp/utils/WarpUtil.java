@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class WarpUtil {
     //False if all players can warp, true if below SG can't
@@ -29,8 +30,7 @@ public class WarpUtil {
     public void crossServerWarp(CPlayer player, final String warp, final String server) throws Exception {
         Core.getMongoHandler().setOnlineDataValue(player.getUniqueId(), "crossServerWarp", warp);
         Core.getMongoHandler().setOnlineDataValue(player.getUniqueId(), "crossServerWarpExpires", System.currentTimeMillis() + (5 * 1000));
-        Core.getMessageHandler().sendMessage(new SendPlayerPacket(player.getUniqueId().toString(), server),
-                "proxy_direct", "direct", String.valueOf(player.getRegistry().getEntry("proxy")));
+        Core.getMessageHandler().sendToProxy(new SendPlayerPacket(player.getUniqueId().toString(), server), UUID.fromString(String.valueOf(player.getRegistry().getEntry("proxy"))));
     }
 
     public void refreshWarps() {
