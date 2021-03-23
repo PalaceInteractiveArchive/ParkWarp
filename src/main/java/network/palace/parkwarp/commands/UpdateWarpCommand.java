@@ -14,7 +14,7 @@ import org.bukkit.Location;
 
 import java.io.IOException;
 
-@CommandMeta(description = "Update Warp", rank = Rank.MOD)
+@CommandMeta(description = "Update Warp", rank = Rank.CM)
 public class UpdateWarpCommand extends CoreCommand {
 
     public UpdateWarpCommand() {
@@ -47,7 +47,7 @@ public class UpdateWarpCommand extends CoreCommand {
                 wu.removeWarp(warp);
                 wu.addWarp(newWarp);
                 wu.updateWarps();
-                player.sendMessage(ChatColor.GRAY + "Warp " + w + " has been updated. Rank minimum: " + (newWarp.getRank() == null ? Rank.SETTLER.getFormattedName() : newWarp.getRank().getFormattedName()));
+                player.sendMessage(ChatColor.GRAY + "Warp " + w + " has been updated. Rank minimum: " + (newWarp.getRank() == null ? Rank.GUEST.getFormattedName() : newWarp.getRank().getFormattedName()));
             } catch (IOException e) {
                 e.printStackTrace();
                 player.sendMessage(ChatColor.RED + "An error occurred while updating that warp, check console for details.");

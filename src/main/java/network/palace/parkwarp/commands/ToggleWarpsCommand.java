@@ -18,9 +18,9 @@ public class ToggleWarpsCommand extends CoreCommand {
     @Override
     protected void handleCommandUnspecific(CommandSender sender, String[] args) throws CommandException {
         if (ParkWarp.getWarpUtil().toggleWarps()) {
-            sender.sendMessage(ChatColor.RED + "You've disabled warp usage for players below " + Rank.SPECIALGUEST.getFormattedName() + "!");
+            sender.sendMessage(ChatColor.RED + "You've disabled warp usage for players below " + Rank.VIP.getFormattedName() + "!");
         } else {
-            sender.sendMessage(ChatColor.GREEN + "You've enabled warp usage for players below " + Rank.SPECIALGUEST.getFormattedName() + "!");
+            sender.sendMessage(ChatColor.GREEN + "You've enabled warp usage for players below " + Rank.VIP.getFormattedName() + "!");
         }
     }
 }

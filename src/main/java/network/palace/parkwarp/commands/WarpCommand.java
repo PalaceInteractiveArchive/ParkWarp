@@ -57,7 +57,7 @@ public class WarpCommand extends CoreCommand {
             String targetServer = warp.getServer();
             if (targetServer.equals(Core.getServerType())) {
                 //Warping self to local warp
-                if (ParkWarp.getWarpUtil().isToggledWarps() && player.getRank().getRankId() < Rank.SPECIALGUEST.getRankId()) {
+                if (ParkWarp.getWarpUtil().isToggledWarps() && player.getRank().getRankId() < Rank.VIP.getRankId()) {
                     //Warping is disabled for players below Special Guest, block this warp
                     player.sendMessage(ChatColor.RED + "Warping is disabled here.");
                     return;
@@ -191,7 +191,7 @@ public class WarpCommand extends CoreCommand {
             if (i < (warps.size() - 1)) {
                 name = name + ", ";
             }
-            Rank warpRank = warp.getRank() == null ? Rank.SETTLER : warp.getRank();
+            Rank warpRank = warp.getRank() == null ? Rank.GUEST : warp.getRank();
             msg.then(name)
                     .color(warpRank.getTagColor())
                     .command("/warp " + warp.getName())

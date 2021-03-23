@@ -10,7 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 
-@CommandMeta(description = "Get information about a warp", rank = Rank.MOD, aliases = "winfo")
+@CommandMeta(description = "Get information about a warp", rank = Rank.CM, aliases = "winfo")
 public class WarpInfoCommand extends CoreCommand {
 
     public WarpInfoCommand() {
@@ -28,7 +28,7 @@ public class WarpInfoCommand extends CoreCommand {
             sender.sendMessage(ChatColor.RED + "Warp not found!");
             return;
         }
-        Rank rank = warp.getRank() == null ? Rank.SETTLER : warp.getRank();
+        Rank rank = warp.getRank() == null ? Rank.GUEST : warp.getRank();
         sender.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "Warp Info:");
         sender.sendMessage(ChatColor.AQUA + "Name: " + rank.getTagColor() + warp.getName());
         sender.sendMessage(ChatColor.AQUA + "X: " + ChatColor.GREEN + warp.getX());

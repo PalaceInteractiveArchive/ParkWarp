@@ -29,7 +29,7 @@ public class PlayerJoin implements Listener {
         // Warp either doesn't exist or isn't on this server, do nothing
         if (warp == null || warp.getWorld() == null) return;
         player.teleport(warp, PlayerTeleportEvent.TeleportCause.PLUGIN);
-        ChatColor rankColor = warp.getRank() == null ? Rank.SETTLER.getTagColor() : warp.getRank().getTagColor();
+        ChatColor rankColor = warp.getRank() == null ? Rank.GUEST.getTagColor() : warp.getRank().getTagColor();
         player.sendMessage(ChatColor.BLUE + "You have arrived at " + ChatColor.WHITE + "[" +
                 rankColor + warp.getName() + ChatColor.WHITE + "]");
     }
