@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 
 import java.io.IOException;
 
-@CommandMeta(description = "Delete a warp", rank = Rank.MOD)
+@CommandMeta(description = "Delete a warp", rank = Rank.CM)
 public class DelWarpCommand extends CoreCommand {
 
     public DelWarpCommand() {

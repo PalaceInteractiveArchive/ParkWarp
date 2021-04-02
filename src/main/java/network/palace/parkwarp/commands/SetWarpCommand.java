@@ -14,7 +14,7 @@ import org.bukkit.Location;
 
 import java.io.IOException;
 
-@CommandMeta(description = "Set a new warp", rank = Rank.MOD)
+@CommandMeta(description = "Set a new warp", rank = Rank.CM)
 public class SetWarpCommand extends CoreCommand {
 
     public SetWarpCommand() {
@@ -45,7 +45,7 @@ public class SetWarpCommand extends CoreCommand {
             try {
                 wu.addWarp(warp);
                 wu.updateWarps();
-                player.sendMessage(ChatColor.GRAY + "Warp " + w + " set. Rank minimum: " + (warp.getRank() == null ? Rank.SETTLER.getFormattedName() : warp.getRank().getFormattedName()));
+                player.sendMessage(ChatColor.GRAY + "Warp " + w + " set. Rank minimum: " + (warp.getRank() == null ? Rank.GUEST.getFormattedName() : warp.getRank().getFormattedName()));
             } catch (IOException e) {
                 e.printStackTrace();
                 player.sendMessage(ChatColor.RED + "An error occurred while setting that warp, check console for details.");

@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender;
 /**
  * Created by Marc on 11/21/16
  */
-@CommandMeta(description = "Reload warps", rank = Rank.MOD)
+@CommandMeta(description = "Reload warps", rank = Rank.CM)
 public class WRLCommand extends CoreCommand {
 
     public WRLCommand() {
