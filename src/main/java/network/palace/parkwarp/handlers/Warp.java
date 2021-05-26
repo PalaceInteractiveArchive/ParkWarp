@@ -34,6 +34,27 @@ public class Warp extends Location {
                     this.server = "WDW";
                 }
                 break;
+            case "dhs/epcot":
+                if (Core.getInstanceName().equals("DHSBuild1")) {
+                    this.server = "DHSBuild";
+                } else {
+                    this.server = "DHS/Epcot";
+                }
+                break;
+            case "mk/ttc":
+                if (Core.getInstanceName().equals("MKBuild1")) {
+                    this.server = "MKBuild";
+                } else {
+                    this.server = "MK/TTC";
+                }
+                break;
+            case "ak/typhoon":
+                if (Core.getInstanceName().equals("AKBuild")) {
+                    this.server = "AKBuild";
+                } else {
+                    this.server = "AK/Typhoon";
+                }
+                break;
             default:
                 if (server.equalsIgnoreCase("uso") && Core.getInstanceName().equals("Build2")) {
                     this.server = "Build2";
